@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+ <meta name="theme-color" content="#050507">
+ <meta name="description" content="Four sports. Twelve chaos events. Enter Chaos League for instant CPU matches and local two-player competition.">
+ <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+ <title>Chaos League · Every round mutates</title>
+</head>
+<body>
+<main class="game-shell single" id="game-shell" aria-label="Chaos League game">
+ <nav class="game-utility" aria-label="Game controls"><button class="icon-button" id="sound-top" aria-label="Mute all audio" aria-pressed="false"></button><button class="icon-button" id="fullscreen" aria-label="Enter fullscreen" aria-pressed="false"></button></nav>
+   <div id="game-stage" class="game-stage">
+    <div id="game" aria-label="Sports arena"></div>
+    <div id="hud" class="hud" hidden>
+     <div class="hud-info"><div id="sport-name">Soccer</div><div id="map-name" class="map-name"></div><span id="modifiers">Low Gravity</span></div>
+     <div class="scoreboard"><div class="score-team left-team"><span id="name-0">Frogs</span><div id="dots-0" class="win-dots"></div></div><div class="score-number"><span id="score-0">0</span><span class="score-dash">:</span><span id="score-1">0</span></div><div class="score-team right-team"><span id="name-1">Rockets</span><div id="dots-1" class="win-dots"></div></div></div>
+     <div class="hud-right"><span id="timer">35</span><button id="pause-button" class="pause-button" aria-label="Pause game"></button></div>
+     <div class="objective" id="objective"></div><div class="round-tag" id="round-tag">Round 1</div>
+    </div>
+    <div id="round-overlay" class="round-overlay" hidden><div><span id="round-eyebrow">Round 1</span><h2 id="round-title">Soccer</h2><div id="round-subtitle"></div><strong id="countdown"></strong></div></div>
+    <div id="score-overlay" class="score-overlay" hidden><div class="score-wave"></div><div class="score-copy"><span id="score-eyebrow"></span><h2 id="score-title">Goal!</h2><p id="score-message"></p><p id="score-caption"></p></div></div>
+    <div id="pause-overlay" class="modal-overlay" hidden><div class="dialog-card"><span class="eyebrow">Match suspended</span><h2>Paused.</h2><p>Resume when you are ready.</p><button id="resume-button" class="primary">Resume match <img class="nav-arrow" src="/icons/arrow.svg" alt=""></button><button id="restart-button" class="secondary">Restart match</button><button id="quit-button" class="text-button">Main menu</button></div></div>
+    <div id="results" class="modal-overlay" hidden><div class="dialog-card results-card"><img class="trophy" src="/icons/cup.svg" alt=""><span id="result-eyebrow" class="eyebrow">Match complete</span><h2 id="result-title">Victory</h2><p id="result-description"></p><div id="result-score">3 : 1</div><button id="rematch-button" class="primary">Rematch <img class="nav-arrow" src="/icons/arrow.svg" alt=""></button><button id="result-menu" class="text-button">Main menu</button></div></div>
+    <section id="bracket-overlay" class="bracket-overlay" aria-label="Chaos Cup tournament" hidden>
+     <div class="bracket-header"><span class="eyebrow">Chaos Cup / Eight competitors</span><h2 id="bracket-title">The draw</h2><p id="bracket-summary"></p></div>
+     <div id="bracket" class="bracket-grid" aria-label="Tournament bracket"></div>
+     <div class="bracket-footer"><p id="matchup"></p><button id="cup-enter" class="primary">Enter quarterfinal</button><button id="cup-menu" class="text-button">Main menu</button></div>
+    </section>
+   </div>
+   <div id="menu" class="menu-screen">
+    <div class="menu-copy"><div class="eyebrow">Enter the league <img class="tiny-star" src="/icons/chaos.svg" alt=""></div><h1>Chaos<br><span>League<img class="title-star" src="/icons/chaos.svg" alt=""></span></h1><p class="tagline">Every round mutates.</p><p class="menu-description">Basketball. Soccer. Volleyball. Knockout.<br>New sport. New physics. Same rival.</p>
+     <div class="menu-buttons"><button class="primary" data-mode="quick"><img class="mode-icon" src="/icons/quick.svg" alt=""><span>Quick Match <small>You vs. the CPU</small></span><img class="button-arrow" src="/icons/arrow.svg" alt=""></button><div class="secondary-row"><button class="secondary" data-mode="two"><img class="mode-icon" src="/icons/two.svg" alt=""><span>Two Player</span><small>One keyboard. No mercy.</small></button><button class="secondary" data-mode="cup"><img class="mode-icon" src="/icons/cup.svg" alt=""><span>Chaos Cup</span><small>Eight players. One trophy.</small></button></div></div>
+     <div class="team-line"><span>Your team</span><div id="teams" class="teams" role="group" aria-label="Choose your team"></div><span id="team-name">Frogs</span></div><div class="menu-links"><button id="how-button">How to play <img class="nav-arrow" src="/icons/arrow.svg" alt=""></button><button id="settings-button">Settings <img class="nav-arrow" src="/icons/arrow.svg" alt=""></button></div>
+    </div>
+    <div class="arena-label"><span>Live arena / 01</span><b>Survive<br>the next rule.</b></div><div class="demo-caption"><span>No two rounds play the same.</span><span class="sport-chips">Equal team stats / Pure physics</span></div>
+   </div>
+   <div id="touch" class="touch-controls" hidden><div class="touch-player"><span class="touch-label">P1</span><button data-side="0" data-control="left" aria-label="Player 1 move left">◀</button><button data-side="0" data-control="right" aria-label="Player 1 move right">▶</button><button class="touch-action" data-side="0" data-control="action" aria-label="Player 1 jump and hit">↟</button></div><div class="touch-player p2-touch"><span class="touch-label">P2</span><button data-side="1" data-control="left" aria-label="Player 2 move left">◀</button><button data-side="1" data-control="right" aria-label="Player 2 move right">▶</button><button class="touch-action" data-side="1" data-control="action" aria-label="Player 2 jump and hit">↟</button></div></div>
+   <div class="rotate-hint"><img src="/icons/rotate.svg" alt=""><b>Rotate to enter the arena.</b><p>Play in landscape. The match will wait.</p></div>
+</main>
+<div id="announcer" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+<dialog id="how-dialog">
+ <div class="dialog-head"><span class="eyebrow">Controls / Rules</span><button data-close aria-label="Close instructions" class="icon-button">×</button></div><h2>Enter. Adapt. Win.</h2>
+ <p>Solo: use WASD or arrows. Switch at any time. Two Player: P1 uses WASD, P2 uses arrows.</p><div class="instruction-grid"><div><b>Move</b><p><kbd>A</kbd> / <kbd>D</kbd> or <kbd>←</kbd> / <kbd>→</kbd></p></div><div><b>Jump + hit</b><p><kbd>W</kbd> or <kbd>↑</kbd></p></div></div>
+ <p>Basketball: hold action near the ball to catch, then release to shoot. Move and jump as you catch. Rivals can knock it loose. In Soccer and Volleyball, tap action to kick or spike. Release before each new action. Jump next to your rival to launch them in Knockout.</p><div class="sport-guide"><div><b>Basketball</b><span>Put the ball through the far hoop.</span></div><div><b>Soccer</b><span>Find the far goal.</span></div><div><b>Volleyball</b><span>Land the ball across the net.</span></div><div><b>Knockout</b><span>Push your rival into the void.</span></div></div>
+ <p class="small-note">Each round brings one or two physics changes. First to three round wins takes the match. Draws replay with a new sport. Escape pauses the game. Touch controls support multiple fingers.</p><button data-close class="primary">Ready to play <img class="nav-arrow" src="/icons/arrow.svg" alt=""></button>
+</dialog>
+<dialog id="settings-dialog">
+ <div class="dialog-head"><span class="eyebrow">Match configuration</span><button data-close aria-label="Close settings" class="icon-button">×</button></div><h2>Settings.</h2>
+ <label class="setting-row">Mute all audio <input id="setting-muted" type="checkbox"></label><label class="setting-row">Sound effects <input id="setting-sound" type="checkbox"></label><label class="setting-row">Background music <input id="setting-music" type="checkbox"></label><label class="setting-row">Impact effects <input id="setting-effects" type="checkbox"></label><label class="setting-row">Master volume <input id="setting-volume" type="range" min="0" max="1" step="0.05"></label><label class="setting-row">CPU difficulty <select id="setting-difficulty"><option value="0">Rookie</option><option value="1">Contender</option><option value="2">All-star</option><option value="3">Champion</option></select></label><label class="setting-row">Rival team <select id="setting-rival"></select></label><p class="small-note">Teams have equal stats. Settings stay on this device. Master mute preserves your Music and SFX choices.</p><button data-close class="primary">Save and return <img class="nav-arrow" src="/icons/arrow.svg" alt=""></button>
+</dialog>
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>
