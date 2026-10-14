@@ -1,6 +1,6 @@
 # Chaos League
 
-Four physics sports, twelve Chaos Modifiers and six equal-stat teams. Quick Match faces a CPU, Two Player shares one keyboard or touchscreen, and Chaos Cup is an eight-player knockout bracket. First to three points wins each match.
+Four physics sports, twelve Chaos Modifiers and six equal-stat teams. Quick Match faces a CPU, Two Player shares one keyboard or touchscreen, and Chaos Cup is an eight-player knockout bracket. First to three points wins each sport round; first to three sport rounds wins the match.
 
 ## Run and build
 
@@ -18,32 +18,51 @@ Node 20.19+ or 22.12+. The static production output is `dist/`. Serve through HT
 
 Solo accepts WASD and arrows at the same time. Local P1 uses A/D/W, and local P2 uses Left/Right/Up. Opposing horizontal directions resolve as neutral. Action jumps and interacts with a nearby ball. Release between new actions. Escape pauses outside browser fullscreen. Browser Escape exits fullscreen. The fullscreen button updates its glyph, title, accessible label and pressed state on every fullscreenchange event.
 
-Basketball: hold action near a loose ball to catch. The ball follows the hands as the player moves and jumps. Release action to shoot toward the facing basket. Momentum influences the shot. Body collisions and opponent action can dislodge it. A 450 ms grab cooldown prevents instant recapture. Each player carries one ball, including Double Ball rounds. A possession ring shows the three-second limit, then the ball releases. Soccer retains foot/body control. Volleyball cannot hold balls.
+Basketball: hold action near a loose ball to catch and charge, then release to shoot at the opposing basket. Full charge takes 1,050 ms and stays capped until release. A compact team-colored arc around the ball shows power. Movement and the jump on action press remain available while carrying. The carrying hand stays stable when changing direction. Strong body contact or a nearby opponent action can knock the ball loose. The releasing player has a 250 ms recatch cooldown; the opponent can still catch. Each player can carry one ball, including Double Ball rounds. CPU uses the same possession and charge path. Soccer retains foot/body control. Volleyball cannot hold balls.
 
 Physical keyboard state is tracked across countdowns, scores and pauses. These phases only gate logical consumption. Keyup always removes its own key. Short keyboard and touch taps remain buffered until the next physics sample. Blur, visibility loss, full exit and teardown clear state. The source defects found in earlier versions were gated keydowns, phase resets and taps expiring before a physics sample. The precise reported tap failure and Two Player freeze were not reproduced in normal-speed manual play.
 
 ## Round and score flow
 
-Sport reveal: 2 seconds. Map reveal: 2 seconds. Modifier reveal: 2 seconds. Countdown: 3, 2, 1 for one second each. Fight: 450 ms. Total: 9.45 seconds. Each cue has its own animation and audio. Large frame gaps never skip a cue. Physics and player motion remain stopped until Fight ends.
+Sport and map reveal together for 950 ms, then all modifiers for 700 ms. Countdown: 3, 2, 1 for one second each. Fight: 300 ms. Total: 4.95 seconds, down from 9.45 seconds. Presentation uses real time, independent of simulation.
 
-After scoring, controlled fixed-step physics runs at 18% speed for 220 ms. The text slam, short shake, team-color highlight, sting, camera response and particles start together. Physics runs at 32% through 1.25 seconds, then 4.5% for the rest of the event. Scoring stays locked. The score copy remains visible for three seconds after its impact, for a 3.22-second event. The ball continues through the hoop or goal. Draws award no point and restart with a new sport.
+Each sport round starts at 0–0 and ends at three points. A normal point resets players, balls, goal state and the play timer while retaining the same sport, theme and modifiers. Three sport round wins ends the match. The fixed-width top-center scoreboard shows current points with POINTS · FIRST TO 3. Symmetric team corners show total round wins and ticks; a supporting center line summarizes round progress. 2–2 displays ROUND POINT. Draws award nothing and replay the same configuration.
 
-Sport terms are Score, Goal, Point and Knockout. Player and CPU lines use separate rotating pools with no consecutive repeats. Local multiplayer uses Player 1 and Player 2 text. Master mute silences Music and SFX and preserves their individual settings. Original 140 BPM percussion and minor-key bass remain. Settings persist on the device.
+The old slowed fixed-step accumulator sampled body movement at approximately 3–19 Hz. Scored physics now integrates a bounded scaled delta on every render frame, easing from 1.0 to 0.2 over 160 ms. UI animations remain at real-time speed. Score text enters at 100 ms, slams and briefly shakes for 240 ms, holds steady, then exits from 2.4 to 2.7 seconds. A 500 ms diagonal shutter covers the arena swap before the next intro. Reduced motion uses a brief stationary shutter.
 
-## Maps
+Basketball uses SCORE, Soccer GOAL, Volleyball POINT and Knockout KNOCKOUT. Player and CPU copy have separate rotating pools; Two Player names the player. The score accent always follows the scoring team. Results use the arena, outcome typography, a labeled round score, and normal sized Rematch/Main Menu buttons. Keyboard focus uses a two-pixel cyan outline only with `:focus-visible`.
 
-| Sport | Underground | Meadow | Mars | Neon City | Reactor |
-| --- | --- | --- | --- | --- | --- |
-| Basketball | Underground Court | Meadow Arena | Mars Dome | Neon Rooftop | Reactor Gym |
-| Soccer | Underground Pitch | Meadow Field | Mars Pitch | Neon Stadium | Reactor Yard |
-| Volleyball | Underground Court | Meadow Court | Mars Court | Neon Roof Court | Reactor Court |
-| Knockout | Underground Shaft | Meadow Ruins | Mars Chasm | Neon Skybridge | Reactor Core |
+Audio routing is Music/SFX buses → master gain → dynamics compressor → bounded soft peak stage → mute gate → output. Master gain is six times the old level; individual music and SFX sliders and toggles persist independently. Scoring ducks music for its sting. Collisions vary with impact strength. A warmed-up browser offline render measured a 5.94× RMS increase for the same jump cue, with zero output when muted. This is an electrical output measurement, not a claim about perceived loudness on every speaker.
 
-Five playable themes per sport, twenty sport/map variants. Themes share a reusable universe but have different structures, materials, lighting, props, floor treatment and ambient motion. Underground has tunnels, pipes and vents. Meadow has hills, trees and turf. Mars has ridges, habitats and station windows. Neon City has towers, signage, roof surfaces and rain. Reactor has turbines, feed pipes, warning marks and pulse strips. Knockout keeps the endless drop in every theme. Backgrounds are built once per round, with a limited ambient pass. Map rotation avoids immediate repeats for each sport. Base gravity and friction stay neutral. Chaos Modifiers own physical rule changes.
+## Environments
+
+All five original environments remain: Underground, Meadow, Mars, Neon City and Reactor, with their original sport-specific map names. Seventeen additions bring the total to 22 themes / 88 sport-theme configurations:
+
+| Theme | Map |
+| --- | --- |
+| Desert | Dust Basin |
+| Snow | Whiteout Court |
+| Forest | Timberline |
+| Mountain | Summit Arena |
+| Beach | Breakwater |
+| Neighborhood | Backyard League |
+| Underwater | Abyss Dome |
+| Atmosphere / Sky | Cloudline |
+| Moon | Lunar Yard |
+| Sun | Helios Array |
+| Dystopia | Sector Zero |
+| Storm | Storm Drain |
+| Volcano | Cinder Ridge |
+| Ancient Ruins | Old Quarry |
+| Cyber City | Circuit District |
+| Arctic Station | Polar Outpost |
+| Orbital Station | Dock Nine |
+
+Theme descriptors provide background/layer colors, ground material, lighting and ambient particle type. Static procedural scene geometry is assembled once per arena, with a small ambient pass. Themes share sport geometry and never add physical effects: Moon has neutral gravity unless a modifier changes it. Recent history excludes the last four themes across sports. Knockout preserves the complete environment above the platform; its chasm begins below the floor, with depth falloff, haze, downward motes and gradual character fading.
 
 ## Viewport and equipment
 
-The game uses the entire viewport with no outer website header, stats strip, footer or canvas border. Phaser resizes the canvas to the viewport. A camera fit preserves physics geometry and character proportions. Background and floor overscan fill extra space at other aspect ratios. DOM menus, HUD, bracket and score overlays use device sizes. Touch controls reserve a 70 px rail. Buttons use clamp sizing and at least 44 px touch targets. Coarse portrait devices request landscape for gameplay. The bracket and title screen remain usable in portrait.
+The game uses the entire viewport with no outer website header, stats strip, footer or canvas border. Phaser resizes the canvas to the viewport. A camera fit preserves physics geometry and character proportions. Background and floor overscan fill extra space at other aspect ratios. DOM menus, HUD, bracket and score overlays use device sizes. Touch controls reserve a 70 px rail. Shared primary, secondary, tertiary and icon buttons use 48 px desktop / 44 px compact targets. Pause, settings and help share the same neutral surface, border, radius, type and spacing tokens. The Cup Start/Continue action is centered, with a real secondary Main Menu button. Coarse portrait devices request landscape for gameplay. The bracket and title screen remain usable in portrait.
 
 Rear equipment renders at depth 1, players and balls at 3, foreground equipment at 4, and effects at 10. Hoops use a rear rim/net, board thickness, steel support and a foreground rim/net. Goals use receding rear frames, mesh, near frames and posts. Volleyball splits its net and front tape/post. Theme materials vary with the map.
 
@@ -51,14 +70,16 @@ Basket scoring requires entry from above, radius clearance at the interpolated d
 
 ## Chaos Cup
 
-Seven distinct CPU names are drawn from a curated pool around You. The bracket shows four quarterfinals, two semifinals and one final. Each player match is first to three points. CPU-vs-CPU matches resolve between rounds. The player path is highlighted, winners animate on advance, and the next matchup gets a 1.2-second entrance before its round reveal. Difficulty rises for later matches. Losing completes the remaining CPU bracket and shows elimination and its champion. Winning three matches triggers the Cup celebration and champion bracket. New Cup creates a new draw.
+Seven distinct CPU names are drawn from a curated pool around You. The bracket shows four quarterfinals, two semifinals and one final. Each player match is first to three sport rounds; each sport round is first to three points. CPU-vs-CPU matches resolve between rounds. The player path is highlighted, winners animate on advance, and the next matchup gets a 1.2-second entrance before its round reveal. Difficulty rises for later matches. Losing completes the remaining CPU bracket and shows elimination and its champion. Winning three matches triggers the Cup celebration and champion bracket. New Cup creates a new draw.
 
 ## Architecture
 
-`PhysicsWorld.ts` owns fixed-step sport simulation, possession, contacts and recovery. `CupTournament.ts` owns entrant and bracket state. `MatchManager.ts` owns sport bags and match scores. `PresentationTimeline.ts` owns reveal timing and score time scales. `ArenaRenderer.ts` and `GoalRenderer.ts` draw environments and layered equipment. `EntityRenderer.ts` draws original characters, ball skins and possession feedback. `FullscreenControl.ts` owns browser fullscreen state. `HUD.ts` draws device-sized DOM UI. `MatchScene.ts` orchestrates phases. No new runtime dependencies were added.
+`PhysicsWorld.ts` owns fixed-step sport simulation, possession, contacts and recovery. `BasketballPossession.ts` defines the discriminated possession states, charge window, cooldown and bounded arcade shot arc. `CupTournament.ts` owns entrant and bracket state. `MatchManager.ts` owns sport bags, point scores and round wins. `PresentationTimeline.ts` owns reveal timing and score time scales. `themes.ts`, `ThemeRenderer.ts`, `ArenaRenderer.ts` and `GoalRenderer.ts` own shared environments and layered equipment. `EntityRenderer.ts` draws original characters, ball skins and possession feedback. `FullscreenControl.ts` owns browser fullscreen state. `HUD.ts` draws device-sized DOM UI. `MatchScene.ts` orchestrates phases. No new runtime dependencies were added.
 
 ## Verification and limits
 
-Automated checks cover all sport scoring, tap/hold/phase transitions, local simultaneous inputs, touch cancellation, possession across ball/player sizes, contested balls, Cup win/loss paths, every map, every compatible modifier pair, reveal intervals, slowdown factors, fullscreen state, SVG consistency, mute and settings. The seeded sweep covers 235 arena/modifier rounds, 200 modifier pairs and twenty complete matches. Viewport geometry checks cover 1920×1080, 1440×900, 1280×800, 1024×768, 844×390, 667×375 and portrait 375×667. Geometry checks do not replace rendered layout inspection.
+`npm test`: 137 passing tests after the UI and basketball overhaul (108-test baseline). The suite covers the separate point/round model, HUD output, modal actions, input, possession/charge/release, opponent basket targeting, cooldowns, contact, Double Ball, CPU behavior, modifiers, presentation timing and audio settings. The simulation sweep includes 1,034 sport/theme/modifier configurations, 200 compatible pairs and twenty complete matches with every point simulated.
 
-Manual browser results and hardware limits are reported with delivery. No claim of measured 60 FPS on a Chromebook, native mobile touch certification, Lighthouse success or audible sound balance is made without those checks.
+The current browser audit uses isolated Playwright Chrome because the MCP browser profile was occupied. Quick Match, Two Player, Cup, Pause and Results were captured and visually reviewed at 1920×1080, 1440×900, 1024×768, 844×390 and 667×375. Real keyboard events exercised short/medium/full basketball shots for both sides and all twelve modifiers. Additional checks cover simultaneous touch controls, pause/resume/restart, Rematch, keyboard focus, fullscreen and the production build. Full normal-clock Quick Match and Two Player journeys use AI-assisted keyboard decisions and real score detectors. Cup entry and controlled bracket advancement are checked separately. `tests/ui-browser-audit.mjs` and `tests/browser-audit.mjs` export the Playwright helpers; they are separate from the Node test count. Detailed evidence, screenshot paths and limits are in `AUDIT.md` and `audit/ui-overhaul/`.
+
+No claim of physical Chromebook performance, native mobile certification, or an audible listening test at normal system volume is made. The source has no added runtime dependencies or raster background downloads.

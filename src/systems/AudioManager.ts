@@ -3,13 +3,16 @@ export interface Settings {
     sound: boolean;
     music: boolean;
     volume: number;
+    musicVolume: number;
+    soundVolume: number;
     effects: boolean;
     difficulty: number;
     team: number;
     rival: number;
 }
+export const AUDIO_BOOST = 6;
 export function audioLevels(settings: Settings, active: boolean) {
-    return { master: settings.muted ? 0 : settings.volume, music: settings.music && active ? 1 : 0, sound: settings.sound ? 1 : 0 };
+    return { master: settings.muted ? 0 : settings.volume * AUDIO_BOOST, music: settings.music && active ? settings.musicVolume : 0, sound: settings.sound ? settings.soundVolume : 0 };
 }
 export class AudioManager {
     context: AudioContext | null = null;
@@ -17,6 +20,7 @@ export class AudioManager {
     private master: GainNode | null = null;
     private musicBus: GainNode | null = null;
     private soundBus: GainNode | null = null;
+    private output: GainNode | null = null;
     private noiseBuffer: AudioBuffer | null = null;
     note = 0;
     active = false;
@@ -32,7 +36,17 @@ export class AudioManager {
                 this.soundBus = this.context.createGain();
                 this.musicBus.connect(this.master);
                 this.soundBus.connect(this.master);
-                this.master.connect(this.context.destination);
+                const compressor = this.context.createDynamicsCompressor();
+                compressor.threshold.value = -10; compressor.knee.value = 12;
+                compressor.ratio.value = 12; compressor.attack.value = .003; compressor.release.value = .12;
+                const limiter = this.context.createWaveShaper();
+                const curve = new Float32Array(4096);
+                // Smooth bounded transfer is a final peak safety stage, not oscillator clipping.
+                for (let i = 0; i < curve.length; i++) curve[i] = .94 * Math.tanh((i * 2 / (curve.length - 1) - 1) / .94);
+                limiter.curve = curve; limiter.oversample = '4x';
+                this.output = this.context.createGain();
+                this.master.connect(compressor); compressor.connect(limiter);
+                limiter.connect(this.output); this.output.connect(this.context.destination);
                 this.noiseBuffer = this.context.createBuffer(1, this.context.sampleRate, this.context.sampleRate);
                 const data = this.noiseBuffer.getChannelData(0);
                 for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
@@ -46,6 +60,8 @@ export class AudioManager {
         if (this.context) {
             const t = this.context.currentTime;
             this.master?.gain.setTargetAtTime(levels.master, t, .008);
+            this.output?.gain.setTargetAtTime(this.settings.muted ? 0 : 1, t, .003);
+            this.musicBus?.gain.cancelScheduledValues(t);
             this.musicBus?.gain.setTargetAtTime(levels.music, t, .008);
             this.soundBus?.gain.setTargetAtTime(levels.sound, t, .008);
         }
@@ -79,11 +95,16 @@ export class AudioManager {
         source.start(t); source.stop(t + duration);
         source.onended = () => { source.disconnect(); filter.disconnect(); gain.disconnect(); };
     }
-    play(name: string) {
+    play(name: string, strength = .6) {
         if (!this.settings.sound || this.settings.muted) return;
+        if (['score', 'goal', 'point', 'knockout'].includes(name) && this.context && this.musicBus) {
+            const t = this.context.currentTime, music = audioLevels(this.settings, this.active).music;
+            this.musicBus.gain.cancelScheduledValues(t);
+            this.musicBus.gain.setTargetAtTime(music * .3, t, .025);
+            this.musicBus.gain.setTargetAtTime(music, t + .55, .16);
+        }
         switch (name) {
             case 'sport': this.tone(130, .2, 'sawtooth', .025, 45); this.tone(65, .16, 'sine', .09); break;
-            case 'map': this.tone(220, .15, 'triangle', .05, -30); this.tone(330, .19, 'triangle', .035, 0, false, .08); break;
             case 'score-player': this.tone(240, .18, 'triangle', .05, 120); break;
             case 'score-cpu': this.tone(190, .19, 'sawtooth', .022, -90); break;
             case 'score-impact': this.tone(60, .22, 'sine', .12, -30); this.noise(.08, .03, 1500); break;
@@ -93,7 +114,7 @@ export class AudioManager {
             case 'catch': this.tone(280, .07, 'triangle', .06, -130); break;
             case 'throw': this.noise(.06, .018, 4500); this.tone(150, .07, 'triangle', .03, 120); break;
             case 'jump': this.tone(160, .08, 'triangle', .055, 160); break;
-            case 'hit': this.tone(100, .08, 'sine', .15, -65); this.noise(.045, .025, 900); break;
+            case 'hit': { const impact = .25 + .75 * Math.max(0, Math.min(1, strength)); this.tone(85 + impact * 30 + Math.random() * 10, .08, 'sine', .12 * impact, -65); this.noise(.045, .025 * impact, 900); } break;
             case 'count-3': this.tone(440, .09, 'square', .024, -60); break;
             case 'count-2': this.tone(520, .09, 'square', .026, -70); break;
             case 'count':
@@ -142,12 +163,12 @@ export class AudioManager {
     destroy() { this.music(false); void this.context?.close(); }
 }
 export function readSettings(): Settings {
-    const defaults: Settings = { muted: false, sound: true, music: true, volume: .65, effects: !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, difficulty: 1, team: 0, rival: 1 };
+    const defaults: Settings = { muted: false, sound: true, music: true, volume: .65, musicVolume: .75, soundVolume: 1, effects: !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, difficulty: 1, team: 0, rival: 1 };
     try {
         const s = JSON.parse(localStorage.getItem('chaos-league-settings') || '{}');
         const number = (key: keyof Settings, min: number, max: number) => Number.isFinite(s?.[key]) ? Math.max(min, Math.min(max, Number(s[key]))) : Number(defaults[key]);
         const bool = (key: 'muted' | 'sound' | 'music' | 'effects') => typeof s?.[key] === 'boolean' ? s[key] : defaults[key];
-        return { muted: bool('muted'), sound: bool('sound'), music: bool('music'), effects: bool('effects'), volume: number('volume', 0, 1), difficulty: Math.round(number('difficulty', 0, 3)), team: Math.round(number('team', 0, 5)), rival: Math.round(number('rival', 0, 5)) };
+        return { muted: bool('muted'), sound: bool('sound'), music: bool('music'), effects: bool('effects'), volume: number('volume', 0, 1), musicVolume: number('musicVolume', 0, 1), soundVolume: number('soundVolume', 0, 1), difficulty: Math.round(number('difficulty', 0, 3)), team: Math.round(number('team', 0, 5)), rival: Math.round(number('rival', 0, 5)) };
     } catch { return defaults; }
 }
 export function saveSettings(s: Settings) { try { localStorage.setItem('chaos-league-settings', JSON.stringify(s)); } catch { /* Storage denial does not block play. */ } }

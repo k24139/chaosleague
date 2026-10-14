@@ -3,16 +3,16 @@ import assert from 'node:assert/strict';
 import { introCue, INTRO_DURATION, ScorePresentation } from '../src/systems/PresentationTimeline';
 import { PhysicsWorld } from '../src/systems/PhysicsWorld';
 import Matter from 'matter-js';
+import { PALETTE } from '../src/config/theme';
 
-test('sport, map and modifier each hold for two seconds, then three one-second counts', () => {
-    for (const [start, kind] of [[0, 'sport'], [2000, 'map'], [4000, 'chaos']] as const) {
-        assert.equal(introCue(start).kind, kind); assert.equal(introCue(start + 1999).kind, kind);
-    }
-    for (const [start, label] of [[6000, '3'], [7000, '2'], [8000, '1']] as const) {
+test('sport and map share one cue, modifiers follow, then a full three-second countdown', () => {
+    assert.equal(introCue(0).kind, 'arena'); assert.equal(introCue(949).kind, 'arena');
+    assert.equal(introCue(950).kind, 'chaos'); assert.equal(introCue(1649).kind, 'chaos');
+    for (const [start, label] of [[1650, '3'], [2650, '2'], [3650, '1']] as const) {
         assert.equal(introCue(start).label, label); assert.equal(introCue(start + 999).label, label);
     }
-    assert.equal(introCue(9000).kind, 'fight'); assert.equal(introCue(9449).kind, 'fight');
-    assert.equal(introCue(INTRO_DURATION).kind, 'live');
+    assert.equal(introCue(4650).kind, 'fight'); assert.equal(introCue(4949).kind, 'fight');
+    assert.equal(INTRO_DURATION, 4950); assert.equal(introCue(INTRO_DURATION).kind, 'live');
 });
 test('score copy uses sport terms, avoids repeats and labels local players', () => {
     const p = new ScorePresentation(() => 0);
@@ -39,7 +39,7 @@ test('the original local SVG set shares one grid, stroke and corner style', asyn
     for (const name of iconNames) {
         const svg = icon(name);
         assert.match(svg, /viewBox="0 0 32 32"/); assert.match(svg, /stroke-width="2"/); assert.match(svg, /stroke-linejoin="bevel"/);
-        assert.equal(readFileSync(new URL(`../public/icons/${name}.svg`, import.meta.url), 'utf8'), svg.replace('currentColor', '#f7f7fa'));
+        assert.equal(readFileSync(new URL(`../public/icons/${name}.svg`, import.meta.url), 'utf8'), svg.replace('currentColor', '#' + PALETTE.text.toString(16).toUpperCase()));
     }
 });
 test('rear goal, ball and front net layers bracket gameplay and remain below effects', async () => {
@@ -51,13 +51,10 @@ test('rear goal, ball and front net layers bracket gameplay and remain below eff
     assert.ok(LAYERS.frontGoal < LAYERS.effects);
 });
 
-test('long or uneven frame gaps cannot skip a countdown numeral or FIGHT', async () => {
+test('intro uses continuous real time without boundary stalls', async () => {
     const { advanceIntro } = await import('../src/systems/PresentationTimeline');
-    let time = 0;
-    const seen = [introCue(time).key];
-    for (let i = 0; i < 7; i++) { time = advanceIntro(time, 5000); seen.push(introCue(time).key); }
-    assert.deepEqual(seen, ['sport','map','chaos','count-3','count-2','count-1','fight','live']);
-    assert.equal(advanceIntro(6000, 300), 6300);
-    assert.equal(advanceIntro(6700, 500), 7000);
-    assert.equal(advanceIntro(6700, 0), 6700);
+    assert.equal(advanceIntro(900, 75), 975);
+    assert.equal(advanceIntro(1650, 300), 1950);
+    assert.equal(advanceIntro(4900, 100), INTRO_DURATION);
+    assert.equal(advanceIntro(800, 0), 800);
 });

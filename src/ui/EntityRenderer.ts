@@ -67,7 +67,7 @@ export class EntityRenderer {
             else { g.lineStyle(4, PALETTE.cyan).beginPath(); g.arc(0, 0, r * .7, -1.5, 1.5); g.strokePath(); g.lineStyle(3, PALETTE.violet).lineBetween(-r * .6, -r * .65, -r * .1, r * .85); }
             if (ball.holder !== null) {
                 g.lineStyle(2, TEAMS[w.players[ball.holder].team].color, .8).beginPath();
-                g.arc(0, 0, r + 5, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.max(0, 1 - (w.elapsed - ball.heldSince) / 3000)); g.strokePath();
+                g.arc(0, 0, r + 5, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.max(.025, ball.charge(w.elapsed))); g.strokePath();
             }
             g.restore();
         }

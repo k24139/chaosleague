@@ -49,7 +49,7 @@ test('modifier selection blocks incompatible pairs for every sport', () => { ass
 test('all twelve modifiers make a measurable rule change', () => { assert.equal(MODIFIERS.length, 12); for (const m of MODIFIERS) {
     assert.notDeepEqual(makeRules([m.id]), makeRules([]));
 } });
-test('every sport and compatible modifier works in all five arenas', () => { let runs = 0, scored = 0; for (const [ai] of ARENAS.entries())
+test('every sport and compatible modifier works in all 22 themes', () => { let runs = 0, scored = 0; for (const [ai] of ARENAS.entries())
     for (const sport of SPORTS) {
         const sets = [[], ...MODIFIERS.filter(m => m.sports.includes(sport)).map(m => [m.id])];
         for (const mods of sets) {
@@ -58,7 +58,7 @@ test('every sport and compatible modifier works in all five arenas', () => { let
             if (r.winner !== null)
                 scored++;
         }
-    } assert.ok(scored / runs > .8, `At least 80% of 240 rounds score before the timeout: ${scored}/${runs}`); console.log(`Arena and modifier sweep: ${scored}/${runs} scored within 45 seconds.`); });
+    } assert.ok(scored / runs > .8, `At least 80% of theme/modifier plays score before the timeout: ${scored}/${runs}`); console.log(`Arena and modifier sweep: ${scored}/${runs} scored within 45 seconds.`); });
 test('every compatible pair survives a full physics round', () => { let runs = 0, scored = 0; for (const sport of SPORTS)
     for (let i = 0; i < MODIFIERS.length; i++)
         for (let j = i + 1; j < MODIFIERS.length; j++) {
@@ -70,17 +70,25 @@ test('every compatible pair survives a full physics round', () => { let runs = 0
             if (r.winner !== null)
                 scored++;
         } console.log(`Pair sweep: ${scored}/${runs} scored within 45 seconds.`); assert.ok(scored / runs > .75); });
-test('twenty full best-of-five AI matches reach a winner without score overflow', () => { const random = seeded(140); for (let n = 0; n < 20; n++) {
-    const m = new MatchManager(n % 2 ? 'quick' : 'two', 1, random);
-    for (let attempt = 0; attempt < 30 && Math.max(...m.wins) < 3; attempt++) {
-        const sport = m.nextSport();
-        const result = simulate(sport, selectModifiers(sport, random), attempt % 5, n * 93 + attempt);
-        if (result.winner !== null)
-            m.score(result.winner);
+test('twenty complete matches simulate each point and keep sport configuration until a round is won', () => {
+    const random = seeded(140);
+    for (let n = 0; n < 20; n++) {
+        const match = new MatchManager(n % 2 ? 'quick' : 'two', 1, random);
+        let sport: SportId = 'soccer', mods: string[] = [], arena = 0, scored = 0;
+        for (let attempt = 0; attempt < 100 && !match.matchComplete; attempt++) {
+            if (!match.round || match.roundComplete) {
+                sport = match.nextSport(); mods = selectModifiers(sport, random); arena = attempt % ARENAS.length;
+            }
+            const result = simulate(sport, mods, arena, n * 193 + attempt);
+            if (result.winner !== null) { match.score(result.winner); scored++; }
+            assert.ok(match.points.every(v => v <= 3));
+        }
+        assert.equal(Math.max(...match.wins), 3);
+        assert.ok(scored >= 9, 'each match requires at least nine distinct scored plays');
+        assert.ok(match.wins.every(v => v <= 3));
     }
-    assert.equal(Math.max(...m.wins), 3);
-    assert.ok(m.wins.every(v => v <= 3));
-} console.log('20 complete best-of-five simulated matches passed.'); });
+    console.log('20 complete matches passed with every point simulated.');
+});
 test('sport shuffle bags contain all four sports and never repeat across the boundary', () => { const m = new MatchManager('quick', 1, seeded(35)); for (let i = 0; i < 25; i++) {
     const bag = [m.nextSport(), m.nextSport(), m.nextSport(), m.nextSport()];
     assert.equal(new Set(bag).size, 4);
@@ -92,7 +100,7 @@ test('Chaos Cup resets best-of-five state as its three tournament matches advanc
     const cup = new MatchManager('cup', 0);
     for (let stage = 0; stage < 3; stage++) {
         assert.equal(cup.cupStage, stage); assert.equal(cup.difficulty, [0, 2, 3][stage]);
-        cup.score(0); cup.score(0); assert.equal(cup.score(0), true);
+        for(let round=0; round<3; round++) { cup.nextSport(); cup.score(0); cup.score(0); assert.equal(cup.score(0), true); }
         cup.cup!.resolveHuman(true);
         if (stage < 2) { cup.nextCup(); assert.deepEqual(cup.wins, [0, 0]); assert.equal(cup.round, 0); }
     }

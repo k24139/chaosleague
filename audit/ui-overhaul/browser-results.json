@@ -1,0 +1,349 @@
+{
+  "layouts": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "screens": [
+        "quick",
+        "two",
+        "pause",
+        "results",
+        "cup"
+      ],
+      "bounds": "pass",
+      "actions": "pass"
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "screens": [
+        "quick",
+        "two",
+        "pause",
+        "results",
+        "cup"
+      ],
+      "bounds": "pass",
+      "actions": "pass"
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "screens": [
+        "quick",
+        "two",
+        "pause",
+        "results",
+        "cup"
+      ],
+      "bounds": "pass",
+      "actions": "pass"
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "screens": [
+        "quick",
+        "two",
+        "pause",
+        "results",
+        "cup"
+      ],
+      "bounds": "pass",
+      "actions": "pass"
+    },
+    {
+      "width": 667,
+      "height": 375,
+      "screens": [
+        "quick",
+        "two",
+        "pause",
+        "results",
+        "cup"
+      ],
+      "bounds": "pass",
+      "actions": "pass"
+    }
+  ],
+  "basketball": {
+    "cases": [
+      {
+        "side": 0,
+        "duration": 50,
+        "mods": [],
+        "away": false,
+        "jumped": true,
+        "charge": 0.07936507936507937,
+        "velocity": {
+          "x": 5.45831539364184,
+          "y": -8.334498662407725
+        }
+      },
+      {
+        "side": 0,
+        "duration": 500,
+        "mods": [],
+        "away": false,
+        "jumped": true,
+        "charge": 0.5079365079365077,
+        "velocity": {
+          "x": 8.108032161787719,
+          "y": -8.12950548701889
+        }
+      },
+      {
+        "side": 0,
+        "duration": 1250,
+        "mods": [],
+        "away": false,
+        "jumped": true,
+        "charge": 1,
+        "velocity": {
+          "x": 10.724405386210378,
+          "y": -12.362802231264197
+        }
+      },
+      {
+        "side": 1,
+        "duration": 50,
+        "mods": [],
+        "away": false,
+        "jumped": true,
+        "charge": 0.07936507936507937,
+        "velocity": {
+          "x": -5.453757577007082,
+          "y": -8.338627649753732
+        }
+      },
+      {
+        "side": 1,
+        "duration": 500,
+        "mods": [],
+        "away": false,
+        "jumped": true,
+        "charge": 0.5079365079365077,
+        "velocity": {
+          "x": -8.09991148907443,
+          "y": -8.147579115218605
+        }
+      },
+      {
+        "side": 1,
+        "duration": 1250,
+        "mods": [],
+        "away": false,
+        "jumped": true,
+        "charge": 1,
+        "velocity": {
+          "x": -10.718014290660903,
+          "y": -12.37202144321418
+        }
+      },
+      {
+        "side": 0,
+        "duration": 500,
+        "mods": [],
+        "away": true,
+        "jumped": true,
+        "charge": 0.5079365079365077,
+        "velocity": {
+          "x": 8.61268528128366,
+          "y": -8.852732279109375
+        }
+      },
+      {
+        "side": 1,
+        "duration": 500,
+        "mods": [],
+        "away": true,
+        "jumped": true,
+        "charge": 0.5079365079365077,
+        "velocity": {
+          "x": -8.619016878692719,
+          "y": -8.849328467303337
+        }
+      },
+      {
+        "side": 0,
+        "duration": 500,
+        "mods": [
+          "moving-goals"
+        ],
+        "away": false,
+        "jumped": true,
+        "charge": 0.5079365079365077,
+        "velocity": {
+          "x": 8.108032161787719,
+          "y": -7.420275239222008
+        }
+      },
+      {
+        "side": 0,
+        "duration": 500,
+        "mods": [
+          "giant-ball"
+        ],
+        "away": false,
+        "jumped": true,
+        "charge": 0.4920634920634918,
+        "velocity": {
+          "x": 8.00894772070518,
+          "y": -7.986592079762602
+        }
+      },
+      {
+        "side": 0,
+        "duration": 500,
+        "mods": [
+          "tiny-ball"
+        ],
+        "away": false,
+        "jumped": true,
+        "charge": 0.4920634920634918,
+        "velocity": {
+          "x": 7.953584729188833,
+          "y": -8.152303140234153
+        }
+      },
+      {
+        "side": 0,
+        "duration": 500,
+        "mods": [
+          "double-ball"
+        ],
+        "away": false,
+        "jumped": true,
+        "charge": 0.5079365079365077,
+        "velocity": {
+          "x": 8.108032161787719,
+          "y": -8.12950548701889
+        }
+      },
+      {
+        "side": 0,
+        "duration": 500,
+        "mods": [
+          "low-gravity"
+        ],
+        "away": false,
+        "jumped": true,
+        "charge": 0.5079365079365077,
+        "velocity": {
+          "x": 8.10311808402355,
+          "y": -4.240884162774023
+        }
+      },
+      {
+        "side": 0,
+        "duration": 500,
+        "mods": [
+          "high-gravity"
+        ],
+        "away": false,
+        "jumped": true,
+        "charge": 0.5079365079365077,
+        "velocity": {
+          "x": 8.102917400165609,
+          "y": -11.717779956431457
+        }
+      },
+      {
+        "side": 0,
+        "duration": 500,
+        "mods": [
+          "super-bounce"
+        ],
+        "away": false,
+        "jumped": true,
+        "charge": 0.5079365079365077,
+        "velocity": {
+          "x": 8.108032161787719,
+          "y": -7.604334961751306
+        }
+      },
+      {
+        "side": 0,
+        "duration": 500,
+        "mods": [
+          "speed-boost"
+        ],
+        "away": false,
+        "jumped": true,
+        "charge": 0.5079365079365077,
+        "velocity": {
+          "x": 8.108032161787719,
+          "y": -8.12950548701889
+        }
+      },
+      {
+        "side": 0,
+        "duration": 500,
+        "mods": [
+          "giant-players"
+        ],
+        "away": false,
+        "jumped": true,
+        "charge": 0.5079365079365077,
+        "velocity": {
+          "x": 8.133751752436694,
+          "y": -7.8823990150977465
+        }
+      },
+      {
+        "side": 0,
+        "duration": 500,
+        "mods": [
+          "tiny-players"
+        ],
+        "away": false,
+        "jumped": true,
+        "charge": 0.4920634920634918,
+        "velocity": {
+          "x": 7.94756421570014,
+          "y": -8.35354961124682
+        }
+      },
+      {
+        "side": 0,
+        "duration": 500,
+        "mods": [
+          "strong-wind"
+        ],
+        "away": false,
+        "jumped": true,
+        "charge": 0.5079365079365077,
+        "velocity": {
+          "x": 8.210137838517028,
+          "y": -7.995989359620921
+        }
+      },
+      {
+        "side": 0,
+        "duration": 500,
+        "mods": [
+          "ice-floor"
+        ],
+        "away": false,
+        "jumped": true,
+        "charge": 0.4920634920634918,
+        "velocity": {
+          "x": 7.981820402733035,
+          "y": -8.069269245778685
+        }
+      }
+    ],
+    "extra": [
+      "jump on charge press",
+      "no instant self-recatch",
+      "pause while charging, release during pause, resume",
+      "strong contact dislodges",
+      "8 rapid press/release cycles",
+      "Double Ball independent local input",
+      "point detector clears held second ball; next play starts free",
+      "CPU pursues opposing holder"
+    ]
+  },
+  "errors": [],
+  "warnings": []
+}

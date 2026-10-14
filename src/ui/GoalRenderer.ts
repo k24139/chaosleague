@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { FLOOR, WIDTH } from '../config/game';
+import { ARENAS, FLOOR, WIDTH } from '../config/game';
 import { BASKET, GOAL, LAYERS } from '../config/geometry';
 import { PALETTE as P } from '../config/theme';
 import type { PhysicsWorld } from '../systems/PhysicsWorld';
@@ -13,7 +13,7 @@ export class GoalRenderer {
     }
     private material = 0x64748b;
     draw(w: PhysicsWorld) {
-        this.material = [0x7b7e83, 0x6b8865, 0xb39d88, 0x647ba3, 0x5c9285][w.arenaIndex];
+        this.material = ARENAS[w.arenaIndex].accent;
         this.rear.clear(); this.front.clear();
         if (w.sportId === 'soccer') for (const side of [0, 1]) this.soccer(side, w.goalY);
         if (w.sportId === 'basketball') for (const x of BASKET.centers) this.basket(x, w.goalY, Math.max(1, w.balls[0]?.radius ?? 20));

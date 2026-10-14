@@ -2,10 +2,16 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { SCORE_DURATION, SCORE_IMPACT, scoreTimeScale } from '../src/systems/PresentationTimeline';
 import { fullscreenView } from '../src/systems/FullscreenControl';
-test('score presentation keeps three seconds of copy after a 220ms slow impact', () => {
-    assert.equal(SCORE_DURATION, 3000); assert.equal(SCORE_IMPACT, 220);
-    assert.equal(scoreTimeScale(0), .18); assert.equal(scoreTimeScale(219), .18);
-    assert.equal(scoreTimeScale(220), .32); assert.equal(scoreTimeScale(1249), .32); assert.equal(scoreTimeScale(1250), .045);
+test('score presentation lasts 2.7 seconds with a continuous 160ms ease to 20% speed', () => {
+    assert.equal(SCORE_IMPACT + SCORE_DURATION, 2700);
+    assert.equal(scoreTimeScale(0), 1);
+    assert.ok(Math.abs(scoreTimeScale(80) - .6) < .00001);
+    assert.ok(Math.abs(scoreTimeScale(160) - .2) < .00001);
+    let previous = 1;
+    for (let t = 1; t < 3000; t++) {
+        const next = scoreTimeScale(t); assert.ok(next <= previous);
+        assert.ok(previous - next < .008); previous = next;
+    }
 });
 test('fullscreen labels and enter/exit glyphs always correspond to browser state', () => {
     assert.deepEqual(fullscreenView(false), { label: 'Enter fullscreen', icon: 'fullscreen' });

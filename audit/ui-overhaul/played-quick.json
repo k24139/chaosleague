@@ -1,0 +1,671 @@
+{
+  "mode": "quick",
+  "elapsed": 201871,
+  "events": [
+    {
+      "phase": "intro",
+      "round": 1,
+      "points": [
+        0,
+        0
+      ],
+      "wins": [
+        0,
+        0
+      ],
+      "sport": "soccer",
+      "at": 1
+    },
+    {
+      "phase": "live",
+      "round": 1,
+      "points": [
+        0,
+        0
+      ],
+      "wins": [
+        0,
+        0
+      ],
+      "sport": "soccer",
+      "at": 4973
+    },
+    {
+      "phase": "point",
+      "round": 1,
+      "points": [
+        1,
+        0
+      ],
+      "wins": [
+        0,
+        0
+      ],
+      "sport": "soccer",
+      "at": 9380
+    },
+    {
+      "phase": "live",
+      "round": 1,
+      "points": [
+        1,
+        0
+      ],
+      "wins": [
+        0,
+        0
+      ],
+      "sport": "soccer",
+      "at": 12162
+    },
+    {
+      "phase": "point",
+      "round": 1,
+      "points": [
+        1,
+        1
+      ],
+      "wins": [
+        0,
+        0
+      ],
+      "sport": "soccer",
+      "at": 13630
+    },
+    {
+      "phase": "live",
+      "round": 1,
+      "points": [
+        1,
+        1
+      ],
+      "wins": [
+        0,
+        0
+      ],
+      "sport": "soccer",
+      "at": 16396
+    },
+    {
+      "phase": "point",
+      "round": 1,
+      "points": [
+        2,
+        1
+      ],
+      "wins": [
+        0,
+        0
+      ],
+      "sport": "soccer",
+      "at": 18755
+    },
+    {
+      "phase": "live",
+      "round": 1,
+      "points": [
+        2,
+        1
+      ],
+      "wins": [
+        0,
+        0
+      ],
+      "sport": "soccer",
+      "at": 21494
+    },
+    {
+      "phase": "point",
+      "round": 1,
+      "points": [
+        2,
+        2
+      ],
+      "wins": [
+        0,
+        0
+      ],
+      "sport": "soccer",
+      "at": 23017
+    },
+    {
+      "phase": "live",
+      "round": 1,
+      "points": [
+        2,
+        2
+      ],
+      "wins": [
+        0,
+        0
+      ],
+      "sport": "soccer",
+      "at": 25716
+    },
+    {
+      "phase": "point",
+      "round": 1,
+      "points": [
+        2,
+        3
+      ],
+      "wins": [
+        0,
+        1
+      ],
+      "sport": "soccer",
+      "at": 27250
+    },
+    {
+      "phase": "transition",
+      "round": 1,
+      "points": [
+        2,
+        3
+      ],
+      "wins": [
+        0,
+        1
+      ],
+      "sport": "soccer",
+      "at": 29941
+    },
+    {
+      "phase": "transition",
+      "round": 2,
+      "points": [
+        0,
+        0
+      ],
+      "wins": [
+        0,
+        1
+      ],
+      "sport": "knockout",
+      "at": 30234
+    },
+    {
+      "phase": "intro",
+      "round": 2,
+      "points": [
+        0,
+        0
+      ],
+      "wins": [
+        0,
+        1
+      ],
+      "sport": "knockout",
+      "at": 30524
+    },
+    {
+      "phase": "live",
+      "round": 2,
+      "points": [
+        0,
+        0
+      ],
+      "wins": [
+        0,
+        1
+      ],
+      "sport": "knockout",
+      "at": 35478
+    },
+    {
+      "phase": "point",
+      "round": 2,
+      "points": [
+        0,
+        1
+      ],
+      "wins": [
+        0,
+        1
+      ],
+      "sport": "knockout",
+      "at": 54698
+    },
+    {
+      "phase": "live",
+      "round": 2,
+      "points": [
+        0,
+        1
+      ],
+      "wins": [
+        0,
+        1
+      ],
+      "sport": "knockout",
+      "at": 57381
+    },
+    {
+      "phase": "point",
+      "round": 2,
+      "points": [
+        1,
+        1
+      ],
+      "wins": [
+        0,
+        1
+      ],
+      "sport": "knockout",
+      "at": 63188
+    },
+    {
+      "phase": "live",
+      "round": 2,
+      "points": [
+        1,
+        1
+      ],
+      "wins": [
+        0,
+        1
+      ],
+      "sport": "knockout",
+      "at": 65881
+    },
+    {
+      "phase": "point",
+      "round": 2,
+      "points": [
+        2,
+        1
+      ],
+      "wins": [
+        0,
+        1
+      ],
+      "sport": "knockout",
+      "at": 89376
+    },
+    {
+      "phase": "live",
+      "round": 2,
+      "points": [
+        2,
+        1
+      ],
+      "wins": [
+        0,
+        1
+      ],
+      "sport": "knockout",
+      "at": 92128
+    },
+    {
+      "phase": "point",
+      "round": 2,
+      "points": [
+        3,
+        1
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "knockout",
+      "at": 101183
+    },
+    {
+      "phase": "transition",
+      "round": 2,
+      "points": [
+        3,
+        1
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "knockout",
+      "at": 103957
+    },
+    {
+      "phase": "transition",
+      "round": 3,
+      "points": [
+        0,
+        0
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "volleyball",
+      "at": 104176
+    },
+    {
+      "phase": "intro",
+      "round": 3,
+      "points": [
+        0,
+        0
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "volleyball",
+      "at": 104465
+    },
+    {
+      "phase": "live",
+      "round": 3,
+      "points": [
+        0,
+        0
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "volleyball",
+      "at": 109416
+    },
+    {
+      "phase": "point",
+      "round": 3,
+      "points": [
+        1,
+        0
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "volleyball",
+      "at": 113666
+    },
+    {
+      "phase": "live",
+      "round": 3,
+      "points": [
+        1,
+        0
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "volleyball",
+      "at": 116426
+    },
+    {
+      "phase": "point",
+      "round": 3,
+      "points": [
+        1,
+        1
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "volleyball",
+      "at": 119283
+    },
+    {
+      "phase": "live",
+      "round": 3,
+      "points": [
+        1,
+        1
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "volleyball",
+      "at": 121975
+    },
+    {
+      "phase": "point",
+      "round": 3,
+      "points": [
+        2,
+        1
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "volleyball",
+      "at": 126146
+    },
+    {
+      "phase": "live",
+      "round": 3,
+      "points": [
+        2,
+        1
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "volleyball",
+      "at": 128912
+    },
+    {
+      "phase": "point",
+      "round": 3,
+      "points": [
+        2,
+        2
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "volleyball",
+      "at": 131968
+    },
+    {
+      "phase": "live",
+      "round": 3,
+      "points": [
+        2,
+        2
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "volleyball",
+      "at": 134652
+    },
+    {
+      "phase": "point",
+      "round": 3,
+      "points": [
+        2,
+        3
+      ],
+      "wins": [
+        1,
+        2
+      ],
+      "sport": "volleyball",
+      "at": 138152
+    },
+    {
+      "phase": "transition",
+      "round": 3,
+      "points": [
+        2,
+        3
+      ],
+      "wins": [
+        1,
+        2
+      ],
+      "sport": "volleyball",
+      "at": 140835
+    },
+    {
+      "phase": "transition",
+      "round": 4,
+      "points": [
+        0,
+        0
+      ],
+      "wins": [
+        1,
+        2
+      ],
+      "sport": "basketball",
+      "at": 141128
+    },
+    {
+      "phase": "intro",
+      "round": 4,
+      "points": [
+        0,
+        0
+      ],
+      "wins": [
+        1,
+        2
+      ],
+      "sport": "basketball",
+      "at": 141345
+    },
+    {
+      "phase": "live",
+      "round": 4,
+      "points": [
+        0,
+        0
+      ],
+      "wins": [
+        1,
+        2
+      ],
+      "sport": "basketball",
+      "at": 146346
+    },
+    {
+      "phase": "point",
+      "round": 4,
+      "points": [
+        0,
+        1
+      ],
+      "wins": [
+        1,
+        2
+      ],
+      "sport": "basketball",
+      "at": 149417
+    },
+    {
+      "phase": "live",
+      "round": 4,
+      "points": [
+        0,
+        1
+      ],
+      "wins": [
+        1,
+        2
+      ],
+      "sport": "basketball",
+      "at": 152168
+    },
+    {
+      "phase": "point",
+      "round": 4,
+      "points": [
+        0,
+        2
+      ],
+      "wins": [
+        1,
+        2
+      ],
+      "sport": "basketball",
+      "at": 157983
+    },
+    {
+      "phase": "live",
+      "round": 4,
+      "points": [
+        0,
+        2
+      ],
+      "wins": [
+        1,
+        2
+      ],
+      "sport": "basketball",
+      "at": 160698
+    },
+    {
+      "phase": "point",
+      "round": 4,
+      "points": [
+        1,
+        2
+      ],
+      "wins": [
+        1,
+        2
+      ],
+      "sport": "basketball",
+      "at": 168152
+    },
+    {
+      "phase": "live",
+      "round": 4,
+      "points": [
+        1,
+        2
+      ],
+      "wins": [
+        1,
+        2
+      ],
+      "sport": "basketball",
+      "at": 170909
+    },
+    {
+      "phase": "point",
+      "round": 4,
+      "points": [
+        1,
+        3
+      ],
+      "wins": [
+        1,
+        3
+      ],
+      "sport": "basketball",
+      "at": 199171
+    },
+    {
+      "phase": "finished",
+      "round": 4,
+      "points": [
+        1,
+        3
+      ],
+      "wins": [
+        1,
+        3
+      ],
+      "sport": "basketball",
+      "at": 201870
+    }
+  ],
+  "final": {
+    "phase": "finished",
+    "wins": [
+      1,
+      3
+    ]
+  }
+}

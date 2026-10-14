@@ -1,0 +1,18 @@
+{
+  "result": {
+    "touchErrors": [],
+    "touchWarnings": [],
+    "buttonStates": "default, hover, active, focus-visible, disabled",
+    "fullscreen": "enter and exit",
+    "touch": "independent two-player move, catch, charge, release, pause/resume, Cup menu",
+    "before": [
+      308.11872011727706,
+      811.9802560561102
+    ],
+    "after": [
+      402.8787655231807,
+      717.0814076585706
+    ]
+  },
+  "errors": []
+}

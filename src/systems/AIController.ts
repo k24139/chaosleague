@@ -1,3 +1,4 @@
+import { preferredCharge } from './BasketballPossession';
 import type { Input } from '../config/game';
 import type { PhysicsWorld } from './PhysicsWorld';
 export class AIController {
@@ -11,7 +12,8 @@ export class AIController {
         this.next = w.elapsed + [240, 155, 100, 75][this.difficulty];
         const p = w.players[this.side], enemy = w.players[1 - this.side], pos = p.body.position;
         const dir = this.side === 0 ? 1 : -1;
-        const ball = w.balls.slice().sort((a, b) => Math.abs(a.body.position.x - pos.x) - Math.abs(b.body.position.x - pos.x))[0];
+        const priority = (holder: 0 | 1 | null) => holder === this.side ? 0 : holder === null ? 1 : 2;
+        const ball = w.balls.slice().sort((a, b) => priority(a.holder) - priority(b.holder) || Math.abs(a.body.position.x - pos.x) - Math.abs(b.body.position.x - pos.x))[0];
         let target = pos.x, action = false;
         if (w.sportId === 'knockout') {
             target = enemy.body.position.x;
@@ -33,10 +35,16 @@ export class AIController {
             action = close && b.y > 170 && (p.grounded || Math.abs(b.y - pos.y) < 110);
         }
         if (w.sportId === 'basketball' && w.balls.some(b => b.holder === this.side)) {
-            target = this.side === 0 ? 690 : 430;
-            action = w.elapsed - w.balls.find(b => b.holder === this.side)!.heldSince < 450;
+            const held = w.balls.find(b => b.holder === this.side)!;
+            const basket = w.opponentBasket(this.side);
+            target = basket.x - dir * [300, 360, 420, 460][this.difficulty];
+            const distance = Math.abs(basket.x - held.body.position.x);
+            const error = [.14, .08, .035, 0][this.difficulty];
+            const desired = Math.min(1, preferredCharge(distance) + error);
+            action = held.possession.kind === 'held' || held.charge(w.elapsed) < desired;
         }
-        const mistake = this.random() < [.14, .08, .04, .025][this.difficulty];
+        const carrying = w.balls.some(b => b.holder === this.side);
+        const mistake = !carrying && this.random() < [.14, .08, .04, .025][this.difficulty];
         const deadzone = [32, 24, 18, 14][this.difficulty];
         this.input = { left: !mistake && target < pos.x - deadzone, right: !mistake && target > pos.x + deadzone, action: !mistake && action && (w.balls.some(b => b.holder === this.side) || w.elapsed > this.actionRelease) };
         if (this.input.action)

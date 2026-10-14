@@ -1,4 +1,6 @@
 import Matter from 'matter-js';
+import { RECATCH_MS, STEAL_SPEED, shotVelocity } from './BasketballPossession';
+import { BASKET } from '../config/geometry';
 import { Player } from '../entities/Player';
 import { Ball } from '../entities/Ball';
 import { Basketball } from '../sports/Basketball';
@@ -14,6 +16,7 @@ export interface WorldEvent {
     x: number;
     y: number;
     side?: Side;
+    strength?: number;
 }
 export class PhysicsWorld {
     engine = Matter.Engine.create({ enableSleeping: false });
@@ -57,17 +60,18 @@ export class PhysicsWorld {
     setBodyHeight(b: Matter.Body, height: number) { const old = b.bounds.max.y - b.bounds.min.y; if (Math.abs(old - height) > .01)
         Matter.Body.scale(b, 1, height / old); }
     setPlatformWidth(b: Matter.Body, width: number) { const old = b.bounds.max.x - b.bounds.min.x; Matter.Body.scale(b, width / old, 1); }
-    resetPlayers() { for (const [i, p] of this.players.entries()) {
+    resetPlayers() { for (const b of this.balls) this.clearPossession(b); this.actionPrevious = [false, false]; for (const [i, p] of this.players.entries()) {
         Matter.Body.setPosition(p.body, { x: i === 0 ? 310 : 810, y: 430 });
         Matter.Body.setVelocity(p.body, { x: 0, y: 0 });
         Matter.Body.setAngle(p.body, 0);
     } this.recoveryCount++; }
-    resetBall(b: Ball, index = 0) { if (b.holder !== null) this.releaseBall(b, false); Matter.Body.setPosition(b.body, { x: this.sportId === 'volleyball' ? (this.lastTouch === 0 ? 780 : 340) : 560 + index * 65, y: 180 }); Matter.Body.setVelocity(b.body, { x: index === 0 ? 1 : -1, y: 0 }); b.previous = { ...b.body.position }; b.idle = 0; this.events.push({ type: 'reset', x: b.body.position.x, y: 180 }); this.recoveryCount++; }
+    resetBall(b: Ball, index = 0) { this.clearPossession(b); Matter.Body.setPosition(b.body, { x: this.sportId === 'volleyball' ? (this.lastTouch === 0 ? 780 : 340) : 560 + index * 65, y: 180 }); Matter.Body.setVelocity(b.body, { x: index === 0 ? 1 : -1, y: 0 }); b.previous = { ...b.body.position }; b.idle = 0; this.events.push({ type: 'reset', x: b.body.position.x, y: 180 }); this.recoveryCount++; }
     collisions(pairs: Matter.Pair[]) {
         if (this.winner !== null) return;
         for (const pair of pairs) {
             if (this.sportId === 'basketball' && this.players.every(p => pair.bodyA === p.body || pair.bodyB === p.body)) {
-                for (const b of this.balls) if (b.holder !== null) this.releaseBall(b, false);
+                const speed = Math.hypot(pair.bodyA.velocity.x - pair.bodyB.velocity.x, pair.bodyA.velocity.y - pair.bodyB.velocity.y);
+                if (speed >= STEAL_SPEED) for (const b of this.balls) if (b.holder !== null) this.releaseBall(b, false);
             }
             for (const ball of this.balls) {
                 if (ball.holder !== null || this.elapsed < ball.noStrikeUntil) continue;
@@ -81,7 +85,7 @@ export class PhysicsWorld {
                     }
                     if (this.elapsed - this.lastHit > 85) {
                         this.lastHit = this.elapsed;
-                        this.events.push({ type: 'hit', x: ball.body.position.x, y: ball.body.position.y });
+                        this.events.push({ type: 'hit', x: ball.body.position.x, y: ball.body.position.y, strength: Math.min(1, Math.hypot(pair.bodyA.velocity.x - pair.bodyB.velocity.x, pair.bodyA.velocity.y - pair.bodyB.velocity.y) / 16) });
                     }
                 }
             }
@@ -93,50 +97,58 @@ export class PhysicsWorld {
                     p.stun = 200;
                     Matter.Body.setVelocity(p.body, { x: p.body.velocity.x + (p === a ? -1 : 1) * Math.sign(dx) * power, y: Math.min(p.body.velocity.y, -2.5) });
                 }
-                this.events.push({ type: 'hit', x: (a.body.position.x + b.body.position.x) / 2, y: a.body.position.y });
+                this.events.push({ type: 'hit', x: (a.body.position.x + b.body.position.x) / 2, y: a.body.position.y, strength: Math.min(1, power / 14) });
             }
         }
     }
+    opponentBasket(side: Side) {
+        const rim = this.hoops.slice(side === 0 ? 3 : 0, side === 0 ? 5 : 2);
+        return { x: rim.length === 2 ? (rim[0].position.x + rim[1].position.x) / 2 : BASKET.centers[1 - side], y: this.goalY };
+    }
     heldPosition(b: Ball) {
         const p = this.players[b.holder!], r = b.radius, offset = 32 * p.scale + r + 6;
-        let dir = p.facing;
-        if (p.body.position.x + dir * offset < r + 8 || p.body.position.x + dir * offset > 1112 - r) dir *= -1;
-        return { x: p.body.position.x + dir * offset, y: p.body.position.y - 12 * p.scale };
+        // The carrying hand stays on the attacking side, independent of facing changes.
+        const dir = Math.sign(this.opponentBasket(p.side).x - p.body.position.x) || (p.side === 0 ? 1 : -1);
+        return { x: clamp(p.body.position.x + dir * offset, r + 20, 1100 - r), y: p.body.position.y - 12 * p.scale };
+    }
+    clearPossession(b: Ball) {
+        b.possession = { kind: 'free' }; b.body.isSensor = false; b.body.collisionFilter.mask = 1;
     }
     grabBall(p: Player, b: Ball) {
-        if (this.sportId !== 'basketball' || b.holder !== null || b.grabCooldown > this.elapsed || this.balls.some(ball => ball.holder === p.side)) return false;
-        if (Math.hypot(b.body.position.x - p.body.position.x, b.body.position.y - p.body.position.y) > p.radius + b.radius + 38) return false;
-        b.holder = p.side; b.heldSince = this.elapsed; b.lastTouch = p.side; b.idle = 0;
+        const state = b.possession;
+        if (this.sportId !== 'basketball' || b.holder !== null || p.stun > 0 ||
+            (state.kind === 'released' && state.owner === p.side && state.until > this.elapsed) ||
+            this.balls.some(ball => ball.holder === p.side)) return false;
+        const distance = Math.hypot(b.body.position.x - p.body.position.x, b.body.position.y - p.body.position.y);
+        const relativeSpeed = Math.hypot(b.body.velocity.x - p.body.velocity.x, b.body.velocity.y - p.body.velocity.y);
+        if (distance > p.radius + b.radius + (relativeSpeed > 12 ? 4 : 18)) return false;
+        b.possession = { kind: 'held', owner: p.side, caughtAt: this.elapsed }; b.lastTouch = p.side; this.lastTouch = p.side; b.idle = 0;
         b.body.isSensor = true; b.body.collisionFilter.mask = 0;
         Matter.Body.setPosition(b.body, this.heldPosition(b)); Matter.Body.setVelocity(b.body, { x: 0, y: 0 });
         this.events.push({ type: 'catch', x: b.body.position.x, y: b.body.position.y, side: p.side }); return true;
     }
     releaseBall(b: Ball, shoot = true) {
         if (b.holder === null) return;
-        const p = this.players[b.holder];
-        b.holder = null; b.body.isSensor = false; b.body.collisionFilter.mask = 1;
-        b.grabCooldown = this.elapsed + 450; b.noStrikeUntil = this.elapsed + 180;
+        const p = this.players[b.holder], charge = b.charge(this.elapsed), anchor = this.heldPosition(b);
+        b.possession = { kind: 'released', owner: p.side, until: this.elapsed + RECATCH_MS, strikeUntil: this.elapsed + 100 };
+        b.body.isSensor = false; b.body.collisionFilter.mask = 1;
+        Matter.Body.setPosition(b.body, anchor);
         if (shoot) {
-            const pos = b.body.position, target = p.facing > 0 ? 1026 : 94;
-            const t = clamp(Math.abs(target - pos.x) / 10, 26, 72), g = .27778 * this.rules.gravity;
-            Matter.Body.setVelocity(b.body, { x: (target - pos.x) / t + p.body.velocity.x * .18, y: (this.goalY - 12 - pos.y - .5 * g * t * t) / t });
+            Matter.Body.setVelocity(b.body, shotVelocity(anchor, this.opponentBasket(p.side), charge, this.rules.gravity, p.body.velocity));
         } else {
-            if (this.winner === null) p.stun = 180; Matter.Body.setVelocity(b.body, { x: -p.facing * 6, y: -5 });
+            if (this.winner === null) p.stun = 180;
+            const dir = p.side === 0 ? 1 : -1;
+            Matter.Body.setVelocity(b.body, { x: dir * 4 + p.body.velocity.x * .2, y: -5 });
         }
         b.previous = { ...b.body.position };
-        this.events.push({ type: 'throw', x: b.body.position.x, y: b.body.position.y, side: p.side });
+        this.events.push({ type: 'throw', x: b.body.position.x, y: b.body.position.y, side: p.side, strength: charge });
     }
     strike(p: Player, b: Ball, action: boolean) {
         if (b.holder !== null || this.elapsed < b.noStrikeUntil) return;
-        const targetX = p.side === 0 ? 1026 : 94, dir = p.side === 0 ? 1 : -1, pos = b.body.position;
+        const dir = p.side === 0 ? 1 : -1;
         if (this.sportId === 'basketball') {
-            if (!action && !p.jumpHeld) {
-                Matter.Body.setVelocity(b.body, { x: dir * 5.5 + p.body.velocity.x * .3, y: -5 });
-                return;
-            }
-            // Solve a real ballistic arc toward the rim using the current gravity.
-            const t = clamp(Math.abs(targetX - pos.x) / 10, 26, 72), g = .27778 * this.rules.gravity;
-            Matter.Body.setVelocity(b.body, { x: (targetX - pos.x) / t, y: (this.goalY - 12 - pos.y - .5 * g * t * t) / t });
+            // Body contact deflects loose balls. Controlled shots require possession.
+            Matter.Body.setVelocity(b.body, { x: dir * 4 + p.body.velocity.x * .3, y: -4 });
         }
         else if (this.sportId === 'soccer') {
             Matter.Body.setVelocity(b.body, { x: dir * (action ? 13 : 8) + p.body.velocity.x * .32, y: action ? -5.2 : -3.2 });
@@ -160,21 +172,25 @@ export class PhysicsWorld {
             const x = p.body.position.x;
             p.grounded = this.statics.some(b => Math.abs(foot - b.bounds.min.y) < 9 && x > b.bounds.min.x - 10 && x < b.bounds.max.x + 10 && p.body.velocity.y >= -1 && b.label !== 'wall');
             if (this.sportId === 'basketball') {
-                const held = this.balls.find(b => b.holder === p.side);
-                if (held && (!inputs[p.side].action || this.elapsed - held.heldSince > 3000)) this.releaseBall(held);
-                if (!held && inputs[p.side].action) {
-                    const nearest = this.balls.filter(b => b.holder === null).sort((a, b) => Math.hypot(a.body.position.x - x, a.body.position.y - p.body.position.y) - Math.hypot(b.body.position.x - x, b.body.position.y - p.body.position.y))[0];
-                    if (nearest) this.grabBall(p, nearest);
+                let held = this.balls.find(b => b.holder === p.side);
+                const action = inputs[p.side].action;
+                if (held?.possession.kind === 'charging' && !action) this.releaseBall(held);
+                if (!held && action) {
+                    const nearest = this.balls.filter(b => b.holder === null).sort((a, b) => Math.hypot(a.body.position.x - x, a.body.position.y - p.body.position.y) - Math.hypot(b.body.position.x - x, b.body.position.y - p.body.position.y));
+                    for (const b of nearest) if (this.grabBall(p, b)) { held = b; break; }
                 }
-                if (inputs[p.side].action && !this.actionPrevious[p.side]) for (const b of this.balls) {
-                    if (b.holder !== null && b.holder !== p.side && Math.hypot(b.body.position.x - x, b.body.position.y - p.body.position.y) < p.radius + b.radius + 35) this.releaseBall(b, false);
+                if (held?.possession.kind === 'held' && action) {
+                    held.possession = { ...held.possession, kind: 'charging', startedAt: this.elapsed };
+                }
+                if (action && !this.actionPrevious[p.side] && p.stun <= 0) for (const b of this.balls) {
+                    if (b.holder !== null && b.holder !== p.side && Math.hypot(b.body.position.x - x, b.body.position.y - p.body.position.y) < p.radius + b.radius + 12) this.releaseBall(b, false);
                 }
             }
             this.actionPrevious[p.side] = inputs[p.side].action;
             if (p.move(inputs[p.side], this.rules, dt, this.elapsed)) {
                 this.events.push({ type: 'jump', x, y: p.body.position.y, side: p.side });
                 for (const b of this.balls)
-                    if (Math.hypot(b.body.position.x - x, b.body.position.y - p.body.position.y) < p.radius + b.radius + 75)
+                    if (this.sportId !== 'basketball' && Math.hypot(b.body.position.x - x, b.body.position.y - p.body.position.y) < p.radius + b.radius + 75)
                         this.strike(p, b, true);
                 if (this.sportId === 'knockout') {
                     const other = this.players[1 - p.side];
@@ -209,12 +225,13 @@ export class PhysicsWorld {
         const winner = this.sport.check(this);
         if (winner !== null) {
             this.winner = winner;
-            for (const b of this.balls) if (b.holder !== null) this.releaseBall(b, false);
+            for (const b of this.balls) this.clearPossession(b);
             this.events.push({ type: 'score', x: this.players[winner].body.position.x, y: 360, side: winner });
             return winner;
         }
         for (const [i, b] of this.balls.entries()) {
             if (b.holder !== null) continue;
+            if (b.possession.kind === 'released' && this.elapsed >= b.possession.until) b.possession = { kind: 'free' };
             const v = b.body.velocity;
             if (Math.hypot(v.x, v.y) > 23)
                 Matter.Body.setVelocity(b.body, { x: clamp(v.x, -19, 19), y: clamp(v.y, -22, 22) });
@@ -227,5 +244,5 @@ export class PhysicsWorld {
     }
     // Continue the scored ball through the net after hit-stop, without awarding another point.
     settle(dt = 1000 / 60) { Matter.Engine.update(this.engine, dt); }
-    destroy() { Matter.Events.off(this.engine, 'collisionStart'); Matter.Composite.clear(this.engine.world, false); Matter.Engine.clear(this.engine); }
+    destroy() { for (const b of this.balls) this.clearPossession(b); Matter.Events.off(this.engine, 'collisionStart'); Matter.Composite.clear(this.engine.world, false); Matter.Engine.clear(this.engine); }
 }

@@ -1,0 +1,663 @@
+{
+  "events": [
+    {
+      "phase": "intro",
+      "round": 1,
+      "points": [
+        0,
+        0
+      ],
+      "wins": [
+        0,
+        0
+      ],
+      "sport": "basketball",
+      "mode": "two"
+    },
+    {
+      "phase": "live",
+      "round": 1,
+      "points": [
+        0,
+        0
+      ],
+      "wins": [
+        0,
+        0
+      ],
+      "sport": "basketball",
+      "mode": "two"
+    },
+    {
+      "phase": "point",
+      "round": 1,
+      "points": [
+        1,
+        0
+      ],
+      "wins": [
+        0,
+        0
+      ],
+      "sport": "basketball",
+      "mode": "two"
+    },
+    {
+      "phase": "live",
+      "round": 1,
+      "points": [
+        1,
+        0
+      ],
+      "wins": [
+        0,
+        0
+      ],
+      "sport": "basketball",
+      "mode": "two"
+    },
+    {
+      "phase": "point",
+      "round": 1,
+      "points": [
+        2,
+        0
+      ],
+      "wins": [
+        0,
+        0
+      ],
+      "sport": "basketball",
+      "mode": "two"
+    },
+    {
+      "phase": "live",
+      "round": 1,
+      "points": [
+        2,
+        0
+      ],
+      "wins": [
+        0,
+        0
+      ],
+      "sport": "basketball",
+      "mode": "two"
+    },
+    {
+      "phase": "live",
+      "round": 1,
+      "points": [
+        2,
+        0
+      ],
+      "wins": [
+        0,
+        0
+      ],
+      "sport": "basketball",
+      "mode": "two"
+    },
+    {
+      "phase": "point",
+      "round": 1,
+      "points": [
+        2,
+        0
+      ],
+      "wins": [
+        0,
+        0
+      ],
+      "sport": "basketball",
+      "mode": "two"
+    },
+    {
+      "phase": "live",
+      "round": 1,
+      "points": [
+        2,
+        0
+      ],
+      "wins": [
+        0,
+        0
+      ],
+      "sport": "basketball",
+      "mode": "two"
+    },
+    {
+      "phase": "live",
+      "round": 1,
+      "points": [
+        2,
+        0
+      ],
+      "wins": [
+        0,
+        0
+      ],
+      "sport": "basketball",
+      "mode": "two"
+    },
+    {
+      "phase": "point",
+      "round": 1,
+      "points": [
+        2,
+        0
+      ],
+      "wins": [
+        0,
+        0
+      ],
+      "sport": "basketball",
+      "mode": "two"
+    },
+    {
+      "phase": "live",
+      "round": 1,
+      "points": [
+        2,
+        0
+      ],
+      "wins": [
+        0,
+        0
+      ],
+      "sport": "basketball",
+      "mode": "two"
+    },
+    {
+      "phase": "point",
+      "round": 1,
+      "points": [
+        3,
+        0
+      ],
+      "wins": [
+        1,
+        0
+      ],
+      "sport": "basketball",
+      "mode": "two"
+    },
+    {
+      "phase": "transition",
+      "round": 1,
+      "points": [
+        3,
+        0
+      ],
+      "wins": [
+        1,
+        0
+      ],
+      "sport": "basketball",
+      "mode": "two"
+    },
+    {
+      "phase": "transition",
+      "round": 2,
+      "points": [
+        0,
+        0
+      ],
+      "wins": [
+        1,
+        0
+      ],
+      "sport": "soccer",
+      "mode": "two"
+    },
+    {
+      "phase": "intro",
+      "round": 2,
+      "points": [
+        0,
+        0
+      ],
+      "wins": [
+        1,
+        0
+      ],
+      "sport": "soccer",
+      "mode": "two"
+    },
+    {
+      "phase": "live",
+      "round": 2,
+      "points": [
+        0,
+        0
+      ],
+      "wins": [
+        1,
+        0
+      ],
+      "sport": "soccer",
+      "mode": "two"
+    },
+    {
+      "phase": "point",
+      "round": 2,
+      "points": [
+        1,
+        0
+      ],
+      "wins": [
+        1,
+        0
+      ],
+      "sport": "soccer",
+      "mode": "two"
+    },
+    {
+      "phase": "live",
+      "round": 2,
+      "points": [
+        1,
+        0
+      ],
+      "wins": [
+        1,
+        0
+      ],
+      "sport": "soccer",
+      "mode": "two"
+    },
+    {
+      "phase": "point",
+      "round": 2,
+      "points": [
+        1,
+        1
+      ],
+      "wins": [
+        1,
+        0
+      ],
+      "sport": "soccer",
+      "mode": "two"
+    },
+    {
+      "phase": "live",
+      "round": 2,
+      "points": [
+        1,
+        1
+      ],
+      "wins": [
+        1,
+        0
+      ],
+      "sport": "soccer",
+      "mode": "two"
+    },
+    {
+      "phase": "point",
+      "round": 2,
+      "points": [
+        2,
+        1
+      ],
+      "wins": [
+        1,
+        0
+      ],
+      "sport": "soccer",
+      "mode": "two"
+    },
+    {
+      "phase": "live",
+      "round": 2,
+      "points": [
+        2,
+        1
+      ],
+      "wins": [
+        1,
+        0
+      ],
+      "sport": "soccer",
+      "mode": "two"
+    },
+    {
+      "phase": "point",
+      "round": 2,
+      "points": [
+        2,
+        2
+      ],
+      "wins": [
+        1,
+        0
+      ],
+      "sport": "soccer",
+      "mode": "two"
+    },
+    {
+      "phase": "live",
+      "round": 2,
+      "points": [
+        2,
+        2
+      ],
+      "wins": [
+        1,
+        0
+      ],
+      "sport": "soccer",
+      "mode": "two"
+    },
+    {
+      "phase": "point",
+      "round": 2,
+      "points": [
+        2,
+        3
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "soccer",
+      "mode": "two"
+    },
+    {
+      "phase": "transition",
+      "round": 2,
+      "points": [
+        2,
+        3
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "soccer",
+      "mode": "two"
+    },
+    {
+      "phase": "transition",
+      "round": 3,
+      "points": [
+        0,
+        0
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "knockout",
+      "mode": "two"
+    },
+    {
+      "phase": "intro",
+      "round": 3,
+      "points": [
+        0,
+        0
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "knockout",
+      "mode": "two"
+    },
+    {
+      "phase": "live",
+      "round": 3,
+      "points": [
+        0,
+        0
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "knockout",
+      "mode": "two"
+    },
+    {
+      "phase": "point",
+      "round": 3,
+      "points": [
+        0,
+        1
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "knockout",
+      "mode": "two"
+    },
+    {
+      "phase": "live",
+      "round": 3,
+      "points": [
+        0,
+        1
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "knockout",
+      "mode": "two"
+    },
+    {
+      "phase": "point",
+      "round": 3,
+      "points": [
+        1,
+        1
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "knockout",
+      "mode": "two"
+    },
+    {
+      "phase": "live",
+      "round": 3,
+      "points": [
+        1,
+        1
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "knockout",
+      "mode": "two"
+    },
+    {
+      "phase": "point",
+      "round": 3,
+      "points": [
+        2,
+        1
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "knockout",
+      "mode": "two"
+    },
+    {
+      "phase": "live",
+      "round": 3,
+      "points": [
+        2,
+        1
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "knockout",
+      "mode": "two"
+    },
+    {
+      "phase": "point",
+      "round": 3,
+      "points": [
+        2,
+        2
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "knockout",
+      "mode": "two"
+    },
+    {
+      "phase": "live",
+      "round": 3,
+      "points": [
+        2,
+        2
+      ],
+      "wins": [
+        1,
+        1
+      ],
+      "sport": "knockout",
+      "mode": "two"
+    },
+    {
+      "phase": "point",
+      "round": 3,
+      "points": [
+        2,
+        3
+      ],
+      "wins": [
+        1,
+        2
+      ],
+      "sport": "knockout",
+      "mode": "two"
+    },
+    {
+      "phase": "transition",
+      "round": 3,
+      "points": [
+        2,
+        3
+      ],
+      "wins": [
+        1,
+        2
+      ],
+      "sport": "knockout",
+      "mode": "two"
+    },
+    {
+      "phase": "transition",
+      "round": 4,
+      "points": [
+        0,
+        0
+      ],
+      "wins": [
+        1,
+        2
+      ],
+      "sport": "volleyball",
+      "mode": "two"
+    },
+    {
+      "phase": "intro",
+      "round": 4,
+      "points": [
+        0,
+        0
+      ],
+      "wins": [
+        1,
+        2
+      ],
+      "sport": "volleyball",
+      "mode": "two"
+    },
+    {
+      "phase": "live",
+      "round": 4,
+      "points": [
+        0,
+        0
+      ],
+      "wins": [
+        1,
+        2
+      ],
+      "sport": "volleyball",
+      "mode": "two"
+    },
+    {
+      "phase": "point",
+      "round": 4,
+      "points": [
+        1,
+        0
+      ],
+      "wins": [
+        1,
+        2
+      ],
+      "sport": "volleyball",
+      "mode": "two"
+    },
+    {
+      "phase": "live",
+      "round": 4,
+      "points": [
+        1,
+        0
+      ],
+      "wins": [
+        1,
+        2
+      ],
+      "sport": "volleyball",
+      "mode": "two"
+    },
+    {
+      "phase": "point",
+      "round": 4,
+      "points": [
+        2,
+        3
+      ],
+      "wins": [
+        1,
+        3
+      ],
+      "sport": "volleyball",
+      "mode": "two"
+    },
+    {
+      "phase": "finished",
+      "round": 4,
+      "points": [
+        2,
+        3
+      ],
+      "wins": [
+        1,
+        3
+      ],
+      "sport": "volleyball",
+      "mode": "two"
+    }
+  ],
+  "result": "FINAL RESULT\nPLAYER 2 WINS\n1–3\n\nROUNDS\n\nRockets defeat Frogs\n\nREMATCH\nMAIN MENU"
+}

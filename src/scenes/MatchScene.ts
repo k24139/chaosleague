@@ -13,10 +13,10 @@ import { selectModifiers } from '../systems/ModifierManager';
 import { ArenaRenderer } from '../ui/ArenaRenderer';
 import { EntityRenderer } from '../ui/EntityRenderer';
 import { HUD, el } from '../ui/HUD';
-import { INTRO_DURATION, introCue, advanceIntro, SCORE_DURATION, SCORE_IMPACT, scoreTimeScale, advanceScore } from '../systems/PresentationTimeline';
+import { INTRO_DURATION, introCue, advanceIntro, SCORE_DURATION, SCORE_IMPACT, TRANSITION_DURATION, scoreTimeScale, advanceScore } from '../systems/PresentationTimeline';
 import { icon } from '../ui/icons';
 import { TEAMS, type Mode, type Side } from '../config/game';
-type Phase = 'menu' | 'intro' | 'live' | 'point' | 'finished' | 'bracket';
+type Phase = 'menu' | 'intro' | 'live' | 'point' | 'transition' | 'finished' | 'bracket';
 export class MatchScene extends Phaser.Scene {
     world!: PhysicsWorld;
     arena!: ArenaRenderer;
@@ -31,7 +31,6 @@ export class MatchScene extends Phaser.Scene {
     phaseTime = 0;
     accumulator = 0;
     paused = false;
-    lastCount = -1;
     roundWinner: Side | null = null;
     particles: Phaser.GameObjects.Arc[] = [];
     demoTime = 0;
@@ -40,7 +39,8 @@ export class MatchScene extends Phaser.Scene {
     private fullscreen!: FullscreenControl;
     private scoreShown = false;
     private bracketLaunching = false;
-    private previousMaps = new Map<string, number>();
+    private recentMaps: number[] = [];
+    private transitionLoaded = false;
     private cameraSize = '';
     private lifecycle = new AbortController();
     private falling = new Set<Side>();
@@ -113,7 +113,7 @@ export class MatchScene extends Phaser.Scene {
         document.querySelectorAll<HTMLButtonElement>('[data-team]').forEach(b => b.onclick = () => { this.audio.settings.team = Number(b.dataset.team); saveSettings(this.audio.settings); document.querySelectorAll('[data-team]').forEach(t => t.setAttribute('aria-pressed', String(t === b))); el('team-name').textContent = TEAMS[this.audio.settings.team].name; this.world.players[0].team = this.audio.settings.team; this.audio.unlock(); this.audio.play('button'); });
         el('team-name').textContent = TEAMS[this.audio.settings.team].name;
         el<HTMLSelectElement>('setting-rival').innerHTML = TEAMS.map((t, i) => `<option value="${i}">${t.name}</option>`).join('');
-        for (const id of ['muted', 'sound', 'music', 'effects', 'volume', 'difficulty', 'rival'] as const) {
+        for (const id of ['muted', 'sound', 'music', 'effects', 'volume', 'musicVolume', 'soundVolume', 'difficulty', 'rival'] as const) {
             const element = el<HTMLInputElement>('setting-' + id);
             if (['muted', 'sound', 'music', 'effects'].includes(id))
                 element.checked = this.audio.settings[id] as boolean;
@@ -123,6 +123,8 @@ export class MatchScene extends Phaser.Scene {
                 s[id] = element.checked;
             else if (id === 'volume')
                 s.volume = Number(element.value);
+            else if (id === 'musicVolume' || id === 'soundVolume')
+                s[id] = Number(element.value);
             else if (id === 'difficulty')
                 s.difficulty = Number(element.value);
             else
@@ -150,7 +152,8 @@ export class MatchScene extends Phaser.Scene {
     }
     clean() { if (this.world)
         this.world.destroy(); this.particles.forEach(p => p.destroy()); this.particles = []; this.tweens.killAll(); this.cameras.main.resetFX(); }
-    showMenu() { this.clean(); this.phase = 'menu'; el('game-shell').classList.remove('bracketing'); this.paused = false; this.orientationPaused = false; this.inputManager.enabled = false; this.inputManager.inMatch = false; this.inputManager.clear(); this.audio.music(true, 'menu'); this.platform.gameplayStop(); this.hud.show(false); el('game-shell').classList.remove('paused'); this.world = new PhysicsWorld('soccer', [], 0, [this.audio.settings.team, this.audio.settings.rival]); this.arena.build(0); Matter.Body.setPosition(this.world.players[0].body, { x: 730, y: 477 }); Matter.Body.setPosition(this.world.players[1].body, { x: 925, y: 473 }); this.world.players[0].scale = 1.5; this.world.players[1].scale = 1.5; Matter.Body.setPosition(this.world.balls[0].body, { x: 830, y: 492 }); this.world.balls[0].radius = 25; }
+    showMenu() { this.clean(); this.hud.transition(false); this.phase = 'menu'; el('game-shell').classList.remove('bracketing'); this.paused = false; this.orientationPaused = false; this.inputManager.enabled = false; this.inputManager.inMatch = false; this.inputManager.clear(); this.audio.music(true, 'menu'); this.platform.gameplayStop(); this.hud.show(false);
+        document.querySelector<HTMLButtonElement>('[data-mode=quick]')?.focus({ preventScroll: true }); el('game-shell').classList.remove('paused'); this.world = new PhysicsWorld('soccer', [], 0, [this.audio.settings.team, this.audio.settings.rival]); this.arena.build(0); Matter.Body.setPosition(this.world.players[0].body, { x: 730, y: 477 }); Matter.Body.setPosition(this.world.players[1].body, { x: 925, y: 473 }); this.world.players[0].scale = 1.5; this.world.players[1].scale = 1.5; Matter.Body.setPosition(this.world.balls[0].body, { x: 830, y: 492 }); this.world.balls[0].radius = 25; }
     start(mode: Mode) { this.audio.unlock(); this.audio.play('button'); this.match = new MatchManager(mode, mode === 'cup' ? 0 : this.audio.settings.difficulty, Math.random, this.audio.settings.team); this.roundWinner = null; this.paused = false; this.orientationPaused = false; el('game-shell').classList.remove('paused'); el('pause-overlay').hidden = true; el('results').hidden = true; this.inputManager.twoPlayer = mode === 'two'; this.inputManager.inMatch = true; this.hud.show(true, mode === 'two'); this.audio.music(true, 'match'); if (mode === 'cup') this.showBracket(); else this.nextRound(); }
     showBracket() {
         this.phase = 'bracket'; this.phaseTime = 0; this.bracketLaunching = false; this.paused = false;
@@ -169,25 +172,43 @@ export class MatchScene extends Phaser.Scene {
         const fit = stageFit(width, height);
         this.cameras.main.setViewport(0, 0, width, height).setZoom(Math.max(.001, fit.scale)).centerOn(560, 315);
     }
-    nextRound() {
+    nextRound(reveal = true) {
         this.clean();
         el('game-shell').classList.remove('bracketing'); el('bracket-overlay').hidden = true; el('hud').hidden = false; el('touch').hidden = false;
         const sport = this.match.nextSport();
-        const map = nextMap(this.previousMaps.get(sport) ?? -1); this.previousMaps.set(sport, map);
+        const map = nextMap(this.recentMaps); this.recentMaps = [...this.recentMaps.slice(-3), map];
         const rival = this.match.mode === 'cup' ? this.match.cup!.opponent!.team : this.audio.settings.rival;
         this.world = new PhysicsWorld(sport, selectModifiers(sport), map, [this.audio.settings.team, rival === this.audio.settings.team ? (rival + 1) % TEAMS.length : rival]);
         this.ai = new AIController(this.match.difficulty);
         this.arena.build(this.world.arenaIndex);
-        this.phase = 'intro'; this.phaseTime = 0; this.frameAt = performance.now(); this.freeze = 0; this.lastCount = -1; this.accumulator = 0;
+        this.phase = 'intro'; this.phaseTime = 0; this.frameAt = performance.now(); this.freeze = 0; this.accumulator = 0;
         this.falling.clear(); this.inputManager.enabled = false;
         this.world.players.forEach(p => p.jumpHeld = false);
         this.hud.update(this.world, this.match); this.hud.timer(35); this.hud.resetIntro();
-        this.hud.intro(this.world, this.match, 0); this.audio.play('sport');
-        this.audio.music(true, this.match.wins.some(s => s === 2) ? 'tension' : 'match');
+        if (reveal) { this.hud.intro(this.world, this.match, 0); this.audio.play('sport'); }
+        this.audio.music(true, this.match.points.some(s => s === 2) ? 'tension' : 'match');
         this.platform.gameplayStop();
     }
+    // Reset only the play: sport, theme, modifiers and round points survive.
+    resetPoint() {
+        const { sportId, modifierIds, arenaIndex, players } = this.world;
+        const teams = players.map(p => p.team);
+        this.clean();
+        this.world = new PhysicsWorld(sportId, modifierIds, arenaIndex, teams);
+        this.ai = new AIController(this.match.difficulty);
+        this.phase = 'live'; this.phaseTime = 0; this.frameAt = performance.now();
+        this.accumulator = 0; this.freeze = 0; this.falling.clear();
+        this.inputManager.enabled = true;
+        this.hud.update(this.world, this.match); this.hud.timer(35);
+        this.audio.music(true, this.match.points.some(p => p === 2) ? 'tension' : 'match');
+        this.platform.gameplayStart();
+    }
+    beginTransition() {
+        this.phase = 'transition'; this.phaseTime = 0; this.transitionLoaded = false;
+        this.inputManager.enabled = false; this.hud.transition(true, 0);
+    }
     pause(value: boolean) { if (this.phase === 'menu' || this.phase === 'finished' || this.phase === 'bracket')
-        return; this.frameAt = performance.now(); this.paused = value; el('game-shell').classList.toggle('paused', value); el('pause-overlay').hidden = !value; this.inputManager.enabled = !value && this.phase === 'live'; this.world.players.forEach(p => p.jumpHeld = false); this.audio.music(!value); if (value) {
+        return; this.frameAt = performance.now(); this.paused = value; this.hud.modal(value); el('game-shell').classList.toggle('paused', value); el('pause-overlay').hidden = !value; this.inputManager.enabled = !value && this.phase === 'live'; this.world.players.forEach(p => p.jumpHeld = false); this.audio.music(!value); if (value) {
         this.tweens.pauseAll();
         el('touch').hidden = true;
         el('resume-button').focus({ preventScroll: true });
@@ -280,7 +301,7 @@ export class MatchScene extends Phaser.Scene {
             return;
         this.phaseTime = this.phase === 'intro' ? advanceIntro(this.phaseTime, presentationDelta) : this.phase === 'point' ? advanceScore(this.phaseTime, presentationDelta) : this.phaseTime + presentationDelta;
         if (this.phase === 'intro') {
-            if (this.hud.intro(this.world, this.match, this.phaseTime)) { const cue = introCue(this.phaseTime); this.audio.play(cue.kind === 'count' ? 'count-' + cue.label : cue.kind === 'chaos' ? 'modifier' : cue.kind); }
+            if (this.hud.intro(this.world, this.match, this.phaseTime)) { const cue = introCue(this.phaseTime); this.audio.play(cue.kind === 'arena' ? 'sport' : cue.kind === 'count' ? 'count-' + cue.label : cue.kind === 'chaos' ? 'modifier' : cue.kind); }
             if (this.phaseTime >= INTRO_DURATION) {
                 this.phase = 'live'; this.phaseTime = 0;
                 this.hud.overlay(false); this.inputManager.enabled = true;
@@ -313,7 +334,7 @@ export class MatchScene extends Phaser.Scene {
                 this.endRound(null);
             for (const e of this.world.events) {
                 if (e.type === 'hit') {
-                    this.audio.play('hit');
+                    this.audio.play('hit', e.strength);
                     this.burst(e.x, e.y, 0xfff4cc, 5);
                     if (this.world.sportId === 'knockout' && this.effects) {
                         this.freeze = 35;
@@ -333,22 +354,41 @@ export class MatchScene extends Phaser.Scene {
         }
         if (this.phase === 'point') {
             if (this.roundWinner !== null) {
-                this.accumulator += dt * scoreTimeScale(this.phaseTime);
-                while (this.accumulator >= 1000 / 60) { this.world.settle(); this.accumulator -= 1000 / 60; }
+                // Matter integrates a small delta on EVERY render frame. No slowed
+                // accumulator: that was sampling motion at 3–19 Hz without interpolation.
+                let physicsDelta = Math.min(delta, 50) * scoreTimeScale(this.phaseTime);
+                while (physicsDelta > 0) { const step = Math.min(physicsDelta, 1000 / 60); this.world.settle(step); physicsDelta -= step; }
                 if (!this.scoreShown && this.phaseTime >= SCORE_IMPACT) this.scoreImpact();
             }
             if (this.phaseTime >= SCORE_IMPACT + SCORE_DURATION) {
                 this.hud.overlay(false); this.hud.hideScore();
-                if (this.match.wins.some(s => s >= 3)) {
+                if (this.match.matchComplete) {
                     this.audio.music(false); el('touch').hidden = true;
                     if (this.match.mode === 'cup') {
                         this.match.cup!.resolveHuman(this.roundWinner === 0);
                         if (this.match.cup!.active) this.match.nextCup();
                         this.showBracket();
                     } else {
-                        this.phase = 'finished'; this.audio.play('victory'); this.hud.result(this.match, this.roundWinner!);
+                        this.phase = 'finished'; this.audio.play('victory'); this.hud.result(this.world, this.match, this.roundWinner!);
                     }
-                } else this.nextRound();
+                } else if (this.match.roundComplete) this.beginTransition();
+                else this.resetPoint();
+            }
+        }
+        if (this.phase === 'point') this.hud.scoreExit(this.phaseTime >= 2400);
+        if (this.phase === 'transition') {
+            const elapsed = this.phaseTime;
+            // Hold the fully covered midpoint for a frame even after a long frame gap.
+            if (!this.transitionLoaded && elapsed >= TRANSITION_DURATION / 2) {
+                this.nextRound(false); this.hud.overlay(false);
+                this.phase = 'transition'; this.phaseTime = TRANSITION_DURATION / 2;
+                this.transitionLoaded = true;
+            }
+            this.hud.transition(true, this.phaseTime / TRANSITION_DURATION);
+            if (this.transitionLoaded && this.phaseTime >= TRANSITION_DURATION) {
+                this.hud.transition(false); this.phase = 'intro'; this.phaseTime = 0;
+                this.hud.resetIntro(); this.hud.intro(this.world, this.match, 0);
+                this.audio.play('sport');
             }
         }
         this.arena.draw(this.world, this.effects ? this.demoTime : 0);
