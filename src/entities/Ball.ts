@@ -1,5 +1,5 @@
 import Matter from 'matter-js';
-import { chargeAmount, type Possession } from '../systems/BasketballPossession';
+import { BALL_AIR_FRICTION, chargeAmount, type Possession } from '../systems/BasketballPossession';
 import type { Rules } from '../systems/ModifierManager';
 export class Ball {
     body: Matter.Body;
@@ -12,5 +12,5 @@ export class Ball {
     get noStrikeUntil() { return this.possession.kind === 'released' ? this.possession.strikeUntil : 0; }
     charge(now: number) { return chargeAmount(this.possession, now); }
     radius: number;
-    constructor(rules: Rules, x = 560, y = 230) { this.radius = rules.ballRadius; this.body = Matter.Bodies.circle(x, y, this.radius, { label: 'ball', collisionFilter: { category: 1, mask: 1 }, restitution: rules.bounce, friction: .025, frictionAir: .0015, density: .0012 }); }
+    constructor(rules: Rules, x = 560, y = 230) { this.radius = rules.ballRadius; this.body = Matter.Bodies.circle(x, y, this.radius, { label: 'ball', collisionFilter: { category: 1, mask: 1 }, restitution: rules.bounce, friction: .025, frictionAir: BALL_AIR_FRICTION, density: .0012 }); }
 }

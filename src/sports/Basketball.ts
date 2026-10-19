@@ -29,7 +29,11 @@ export class Basketball implements Sport {
     }
     check(w: PhysicsWorld): Side | null {
         for (const ball of w.balls) {
-            if (ball.holder !== null || this.scored.has(ball.body.id)) continue;
+            if (ball.holder !== null) {
+                for (const i of [0, 1]) this.passages.delete(`${ball.body.id}:${i}`);
+                continue;
+            }
+            if (this.scored.has(ball.body.id)) continue;
             const p = ball.body.position, prev = ball.previous, r = ball.radius;
             for (const [i, rimX] of BASKET.centers.entries()) {
                 const key = `${ball.body.id}:${i}`;
@@ -39,15 +43,20 @@ export class Basketball implements Sport {
                 const inside = Math.abs(p.x - rimX) <= BASKET.rimInner - r;
                 const near = Math.abs(p.x - rimX) < BASKET.rimHalf + r;
                 if (!near || p.y < w.goalY - r - 70) { pass.above = false; pass.crossed = false; pass.blocked = false; }
-                // An upward trip through the mouth does not become a basket on its rebound.
-                if (prior >= 0 && current < 0 && near && ball.body.velocity.y < 0) { pass.blocked = true; pass.above = false; pass.crossed = false; }
+                const delta = current - prior;
+                const atPlane = (depth: number) => prev.x + (p.x - prev.x) * (depth - prior) / delta;
+                const opening = (x: number) => Math.abs(x - rimX) <= BASKET.rimInner - r;
+                // Only an upward crossing THROUGH the opening is an underhand entry.
+                // Crossing beside the rim must not poison a later legitimate basket.
+                if (prior >= 0 && current < 0 && ball.body.velocity.y < 0 && opening(atPlane(0))) {
+                    pass.blocked = true; pass.above = false; pass.crossed = false;
+                }
                 if (!pass.blocked && ((prev.y + r < this.previousRimY) || (p.y + r < w.goalY))) pass.above = true;
                 if (prior < 0 && current >= 0 && ball.body.velocity.y > 0) {
-                    const fraction = -prior / (current - prior);
-                    const crossingX = prev.x + (p.x - prev.x) * fraction;
-                    pass.crossed = pass.above && !pass.blocked && Math.abs(crossingX - rimX) <= BASKET.rimInner - r;
+                    pass.crossed = pass.above && !pass.blocked && opening(atPlane(0));
                 }
-                if (pass.crossed && current >= BASKET.scoreDepth && ball.body.velocity.y > 0 && inside) {
+                // Sample the actual lower-plane crossing, not the end of a fast physics step.
+                if (pass.crossed && prior < BASKET.scoreDepth && current >= BASKET.scoreDepth && ball.body.velocity.y > 0 && opening(atPlane(BASKET.scoreDepth))) {
                     this.scored.add(ball.body.id);
                     return i === 0 ? 1 : 0;
                 }

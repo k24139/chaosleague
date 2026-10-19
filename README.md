@@ -82,10 +82,12 @@ Seven distinct CPU names are drawn from a curated pool around You. The bracket s
 
 ## Verification and limits
 
-`npm test`: 160 passing tests after the Action overhaul (137-test baseline). The suite covers the separate point/round model, HUD output, modal actions, input, possession/charge/release, opponent basket targeting, cooldowns, contact, Double Ball, CPU behavior, modifiers, presentation timing and audio settings. The simulation sweep includes 1,034 sport/theme/modifier configurations, 200 compatible pairs and twenty complete matches with every point simulated.
+`npm test`: 206 passing tests after the hoop-scoring fix (160-test baseline). The suite covers the separate point/round model, HUD output, modal actions, input, possession/charge/release, opponent basket targeting, cooldowns, contact, Double Ball, CPU behavior, modifiers, presentation timing and audio settings. The simulation sweep includes 1,034 sport/theme/modifier configurations, 200 compatible pairs and twenty complete matches with every point simulated.
 
 The current browser audit uses isolated Playwright Chrome because the MCP browser profile was occupied. Quick Match, Two Player, Cup, Pause and Results were captured and visually reviewed at 1920×1080, 1440×900, 1024×768, 844×390 and 667×375. Real keyboard events exercised short/medium/full basketball shots for both sides and all twelve modifiers. Additional checks cover simultaneous touch controls, pause/resume/restart, Rematch, keyboard focus, fullscreen and the production build. Full normal-clock Quick Match and Two Player journeys use AI-assisted keyboard decisions and real score detectors. Cup entry and controlled bracket advancement are checked separately. `tests/ui-browser-audit.mjs` and `tests/browser-audit.mjs` export the Playwright helpers; they are separate from the Node test count. Detailed evidence, screenshot paths and limits are in `AUDIT.md` and `audit/ui-overhaul/`.
 
 No claim of physical Chromebook performance, native mobile certification, or an audible listening test at normal system volume is made. The source has no added runtime dependencies or raster background downloads.
 
 Current possession/Action behavior, browser checks, complete-match evidence, and reproduction instructions are in [audit/ACTION-SYSTEM.md](audit/ACTION-SYSTEM.md).
+
+The hoop trajectory/detector fix and real browser baskets on both sides are documented in [audit/HOOP-SCORING.md](audit/HOOP-SCORING.md). Run `node tests/run-action-browser-audit.mjs --hoops` for the real-input scoring audit.

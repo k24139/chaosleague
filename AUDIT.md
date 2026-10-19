@@ -1,3 +1,7 @@
+# Hoop scoring verification — October 18, 2026
+
+Current scoring fix and real-shot evidence: [Basketball hoop scoring](audit/HOOP-SCORING.md).
+
 # Action system verification — October 18, 2026
 
 Current results and evidence: [Basketball possession and sport Actions](audit/ACTION-SYSTEM.md). The earlier audits below are historical.

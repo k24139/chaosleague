@@ -7,14 +7,15 @@ const browser=await chromium.launch({headless:true,...(process.env.CHROME_PATH?{
 const root=fileURLToPath(new URL('../',import.meta.url));
 const readAudit=async name=>Function('return ('+await fs.readFile(new URL(name,import.meta.url),'utf8')+')')();
 const errors=[];
+const hoops=process.argv.includes('--hoops');
 try {
     const focused=await browser.newPage({hasTouch:true,viewport:{width:1440,height:900}});
     focused.on('pageerror',e=>errors.push(e.message));
-    const focusedResult=await (await readAudit('action-browser-audit.mjs'))(focused);
-    await fs.writeFile(root+'audit/action-browser-results.json',JSON.stringify(focusedResult,null,2)+'\n');
+    const focusedResult=await (await readAudit(hoops?'hoop-browser-audit.mjs':'action-browser-audit.mjs'))(focused);
+    await fs.writeFile(root+(hoops?'audit/hoop-browser-results.json':'audit/action-browser-results.json'),JSON.stringify(focusedResult,null,2)+'\n');
     console.log('Focused browser checks:',focusedResult.results.length);
     await focused.close();
-    if(!process.argv.includes('--focused')) {
+    if(!hoops&&!process.argv.includes('--focused')) {
         const page=await browser.newPage({viewport:{width:1440,height:900}});
         page.on('pageerror',e=>errors.push(e.message));
         await page.goto('http://localhost:5174');

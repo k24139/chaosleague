@@ -156,7 +156,7 @@ export class PhysicsWorld {
         b.body.isSensor = false; b.body.collisionFilter.mask = 1;
         Matter.Body.setPosition(b.body, anchor);
         if (shoot) {
-            Matter.Body.setVelocity(b.body, shotVelocity(anchor, this.opponentBasket(p.side), charge, this.rules.gravity, p.body.velocity));
+            Matter.Body.setVelocity(b.body, shotVelocity(anchor, this.opponentBasket(p.side), charge, this.rules.gravity, p.body.velocity, b.radius));
         } else {
             if (this.winner === null) p.stun = DIZZY_MS;
             const dir = p.side === 0 ? 1 : -1;

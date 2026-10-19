@@ -1,0 +1,976 @@
+{
+  "points": [
+    0,
+    0
+  ],
+  "path": [
+    {
+      "x": 991.8918401182907,
+      "y": 345.9296197477092,
+      "vy": -5.521581315451272,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 995.6101039076578,
+      "y": 340.69409858200885,
+      "vy": -5.235521165700334,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 999.3227903013409,
+      "y": 335.74420847583485,
+      "vy": -4.949890106173996,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1003.0299076654334,
+      "y": 331.0795209825979,
+      "vy": -4.664687493236954,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1006.7314643534797,
+      "y": 326.69960829837856,
+      "vy": -4.3799126842193346,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1010.427468706494,
+      "y": 322.60404326096335,
+      "vy": -4.095565037415213,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1014.1179290529788,
+      "y": 318.79239934888204,
+      "vy": -3.8116439120813084,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1017.8028537089438,
+      "y": 315.26425068044665,
+      "vy": -3.528148668435392,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1021.4822509779248,
+      "y": 312.01917201279167,
+      "vy": -3.2450786676549797,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1025.1561291510022,
+      "y": 309.05673874091593,
+      "vy": -2.9624332718757387,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1028.8244965068202,
+      "y": 306.3765268967258,
+      "vy": -2.6802118441901257,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1032.4873613116044,
+      "y": 303.97811314807973,
+      "vy": -2.398413748646078,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1032.4873613116044,
+      "y": 303.97811314807973,
+      "vy": -2.398413748646078,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1036.1447318191815,
+      "y": 301.8610747978344,
+      "vy": -2.117038350245309,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1039.7966162709972,
+      "y": 300.02498978289225,
+      "vy": -1.8360850149421708,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1043.4430228961353,
+      "y": 298.46943667325024,
+      "vy": -1.5555531096420054,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1047.0839599113356,
+      "y": 297.19399467105046,
+      "vy": -1.2754420021997817,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1050.719435521013,
+      "y": 296.19824360963173,
+      "vy": -0.9957510614187299,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1054.3494579172761,
+      "y": 295.4817639525829,
+      "vy": -0.7164796570488079,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1057.920673724427,
+      "y": 294.97316494937206,
+      "vy": -1.2591192350438405,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1059.2479164925614,
+      "y": 293.87932601271234,
+      "vy": -0.818596094319787,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1058.086279748141,
+      "y": 293.3397355903118,
+      "vy": -0.5395904224005221,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1056.9263854588369,
+      "y": 293.07873233132267,
+      "vy": -0.2610032589891489,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1055.7682310109667,
+      "y": 293.0958983549998,
+      "vy": 0.01716602367713449,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1054.6118137947683,
+      "y": 293.3908164074192,
+      "vy": 0.29491805241940483,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1053.4571312043943,
+      "y": 293.96306986053776,
+      "vy": 0.5722534531185488,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1052.3041806379058,
+      "y": 294.8122427112544,
+      "vy": 0.8491728507166272,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1051.1529594972671,
+      "y": 295.93791958047274,
+      "vy": 1.1256768692183527,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1050.0034651883395,
+      "y": 297.339685712165,
+      "vy": 1.401766131692284,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1048.8556951208752,
+      "y": 299.01712697243755,
+      "vy": 1.6774412602725306,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1047.709646708512,
+      "y": 300.96982984859744,
+      "vy": 1.95270287615989,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1046.5653173687674,
+      "y": 303.1973814482209,
+      "vy": 2.227551599623439,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1045.4227045230323,
+      "y": 305.69936949822267,
+      "vy": 2.501988050001785,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1044.2818055965658,
+      "y": 308.4753823439272,
+      "vy": 2.7760128457045425,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1043.1426180184892,
+      "y": 311.52500894814096,
+      "vy": 3.0496266042137563,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1042.0051392217797,
+      "y": 314.84783889022617,
+      "vy": 3.3228299420852068,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1040.8693666432653,
+      "y": 318.443462365176,
+      "vy": 3.595623474949832,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1040.8693666432653,
+      "y": 318.443462365176,
+      "vy": 3.595623474949832,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1039.7352977236187,
+      "y": 322.3114701826912,
+      "vy": 3.868007817515206,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1038.6029299073516,
+      "y": 326.45145376625794,
+      "vy": 4.139983583566732,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1037.4722606428088,
+      "y": 330.8630051522271,
+      "vy": 4.411551385969176,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1036.3432873821628,
+      "y": 335.5457169888951,
+      "vy": 4.682711836667977,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1035.2160075814077,
+      "y": 340.4991825355859,
+      "vy": 4.953465546690779,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    },
+    {
+      "x": 1034.0904187003537,
+      "y": 345.7229956617344,
+      "vy": 5.223813126148514,
+      "kind": "free",
+      "pass": [
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": false
+        },
+        {
+          "above": false,
+          "crossed": false,
+          "blocked": true
+        }
+      ],
+      "points": [
+        0,
+        0
+      ]
+    }
+  ]
+}
