@@ -1,0 +1,75 @@
+{
+  "results": [
+    "automatic horizontal-only pickup P1",
+    "Jump does not charge P1",
+    "Action charge P1",
+    "release shoots at opponent P1",
+    "automatic horizontal-only pickup P2",
+    "Jump does not charge P2",
+    "Action charge P2",
+    "release shoots at opponent P2",
+    "automatic horizontal-only pickup P1",
+    "ordinary rival collisions preserve possession",
+    "block releases ball and applies one-second dizzy",
+    "pause suspends dizzy timer",
+    "dizzy visibly recovers after resume",
+    "automatic horizontal-only pickup P1",
+    "maximum charge holds without autofire with Moving Goals / Double Ball",
+    "Moving Goals / Double Ball release shoots forward",
+    "CPU automatically collects by contact",
+    "ordinary human collision preserves CPU possession",
+    "CPU charges and releases toward human basket",
+    "automatic horizontal-only pickup P1",
+    "CPU Action block stuns human and releases possession",
+    "in-flight Action block deflects without stunning",
+    "soccer Action moves in requested direction",
+    "Volleyball Action double jump",
+    "knockout Action moves in requested direction",
+    "Chaos Cup entry and live Action",
+    "Cup basketball Action uses shared rules",
+    "Cup soccer Action uses shared rules",
+    "Cup volleyball Action uses shared rules",
+    "Cup knockout Action uses shared rules",
+    "responsive 1920x1080",
+    "responsive 1440x900",
+    "responsive 1024x768",
+    "responsive 844x390",
+    "responsive 667x375",
+    "native simultaneous touch movement + Action",
+    "native touch release clears Action",
+    "native touch hold charges while moving",
+    "native touch release shoots"
+  ],
+  "sizes": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "overflow": false,
+      "canvas": true
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "overflow": false,
+      "canvas": true
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "overflow": false,
+      "canvas": true
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "overflow": false,
+      "canvas": true
+    },
+    {
+      "width": 667,
+      "height": 375,
+      "overflow": false,
+      "canvas": true
+    }
+  ]
+}

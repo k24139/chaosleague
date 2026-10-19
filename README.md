@@ -16,11 +16,15 @@ Node 20.19+ or 22.12+. The static production output is `dist/`. Serve through HT
 
 ## Controls
 
-Solo accepts WASD and arrows at the same time. Local P1 uses A/D/W, and local P2 uses Left/Right/Up. Opposing horizontal directions resolve as neutral. Action jumps and interacts with a nearby ball. Release between new actions. Escape pauses outside browser fullscreen. Browser Escape exits fullscreen. The fullscreen button updates its glyph, title, accessible label and pressed state on every fullscreenchange event.
+Solo accepts WASD and arrows together. Local P1 moves with A/D, jumps with W, and uses Action with S. Local P2 moves with Left/Right, jumps with Up, and uses Action with Down. Solo Down is an alternative Action input. Touch provides separate Left, Right, Jump, and Action controls with simultaneous pointers. Escape pauses outside browser fullscreen.
 
-Basketball: hold action near a loose ball to catch and charge, then release to shoot at the opposing basket. Full charge takes 1,050 ms and stays capped until release. A compact team-colored arc around the ball shows power. Movement and the jump on action press remain available while carrying. The carrying hand stays stable when changing direction. Strong body contact or a nearby opponent action can knock the ball loose. The releasing player has a 250 ms recatch cooldown; the opponent can still catch. Each player can carry one ball, including Double Ball rounds. CPU uses the same possession and charge path. Soccer retains foot/body control. Volleyball cannot hold balls.
+Basketball automatically collects a loose ball on actual player contact, without a key press. Ordinary player collisions preserve possession. Press and hold Action while carrying to charge, then release to shoot toward the current opponent basket. Full charge takes 1,050 ms and never fires automatically. A fresh press is required after collecting while already holding Action. The shooter has a 250 ms recatch cooldown. Double Ball has independent ownership with at most one ball per player.
 
-Physical keyboard state is tracked across countdowns, scores and pauses. These phases only gate logical consumption. Keyup always removes its own key. Short keyboard and touch taps remain buffered until the next physics sample. Blur, visibility loss, full exit and teardown clear state. The source defects found in earlier versions were gated keydowns, phase resets and taps expiring before a physics sample. The precise reported tap failure and Two Player freeze were not reproduced in normal-speed manual play.
+Without a basketball, Action starts a directional slap: 80 ms startup, 250 ms active, 250 ms recovery. Contact with an opponent's held ball releases it with an impulse and makes the holder dizzy for exactly 1,000 ms of game time. Loose-ball blocks deflect without stunning players. A 150 ms pickup grace prevents instant reattachment. Dizzy players retain gravity and collision physics but cannot move intentionally, jump, shoot, or block. Pause suspends the timer.
+
+Soccer Action slides in the input/facing direction for 240 ms with an 850 ms cooldown; actual ball contact receives a stronger directional kick. Volleyball Action grants one extra jump after a normal jump, restored on landing. Knockout Action dashes in the input/facing direction for 240 ms with an 850 ms cooldown, increases physical tackle impact, and allows at most one dash per airtime. CPU uses the same rules.
+
+Physical keyboard state survives phase gates so releases are always consumed. Jump and Action held across a phase gate require release and a fresh press. Movement can remain held. Brief keyboard and touch taps survive until the next physics sample; blur, visibility loss, full exit, and teardown clear state.
 
 ## Round and score flow
 
@@ -78,8 +82,10 @@ Seven distinct CPU names are drawn from a curated pool around You. The bracket s
 
 ## Verification and limits
 
-`npm test`: 137 passing tests after the UI and basketball overhaul (108-test baseline). The suite covers the separate point/round model, HUD output, modal actions, input, possession/charge/release, opponent basket targeting, cooldowns, contact, Double Ball, CPU behavior, modifiers, presentation timing and audio settings. The simulation sweep includes 1,034 sport/theme/modifier configurations, 200 compatible pairs and twenty complete matches with every point simulated.
+`npm test`: 160 passing tests after the Action overhaul (137-test baseline). The suite covers the separate point/round model, HUD output, modal actions, input, possession/charge/release, opponent basket targeting, cooldowns, contact, Double Ball, CPU behavior, modifiers, presentation timing and audio settings. The simulation sweep includes 1,034 sport/theme/modifier configurations, 200 compatible pairs and twenty complete matches with every point simulated.
 
 The current browser audit uses isolated Playwright Chrome because the MCP browser profile was occupied. Quick Match, Two Player, Cup, Pause and Results were captured and visually reviewed at 1920×1080, 1440×900, 1024×768, 844×390 and 667×375. Real keyboard events exercised short/medium/full basketball shots for both sides and all twelve modifiers. Additional checks cover simultaneous touch controls, pause/resume/restart, Rematch, keyboard focus, fullscreen and the production build. Full normal-clock Quick Match and Two Player journeys use AI-assisted keyboard decisions and real score detectors. Cup entry and controlled bracket advancement are checked separately. `tests/ui-browser-audit.mjs` and `tests/browser-audit.mjs` export the Playwright helpers; they are separate from the Node test count. Detailed evidence, screenshot paths and limits are in `AUDIT.md` and `audit/ui-overhaul/`.
 
 No claim of physical Chromebook performance, native mobile certification, or an audible listening test at normal system volume is made. The source has no added runtime dependencies or raster background downloads.
+
+Current possession/Action behavior, browser checks, complete-match evidence, and reproduction instructions are in [audit/ACTION-SYSTEM.md](audit/ACTION-SYSTEM.md).

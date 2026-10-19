@@ -140,7 +140,7 @@ export class MatchScene extends Phaser.Scene {
         el('pause-button').innerHTML = icon('pause');
         el('how-button').innerHTML = icon('rules') + 'How to play';
         el('settings-button').innerHTML = icon('settings') + 'Settings';
-        document.querySelectorAll<HTMLButtonElement>('[data-control]').forEach(b => b.innerHTML = icon(b.dataset.control === 'action' ? 'action' : b.dataset.control === 'left' ? 'left' : 'right'));
+        document.querySelectorAll<HTMLButtonElement>('[data-control]').forEach(b => b.innerHTML = b.dataset.control === 'jump' ? '↑' : b.dataset.control === 'action' ? 'S' : icon(b.dataset.control === 'left' ? 'left' : 'right'));
 
     }
     soundButton() {
@@ -340,6 +340,9 @@ export class MatchScene extends Phaser.Scene {
                         this.freeze = 35;
                         this.cameras.main.shake(65, .002);
                     }
+                }
+                if (['block', 'dizzy', 'slide', 'airjump', 'dash'].includes(e.type)) {
+                    this.audio.play(e.type); this.burst(e.x, e.y, e.type === 'dizzy' ? 0xc8ff38 : 0x26e6ff, 5);
                 }
                 if (e.type === 'catch') this.audio.play('catch');
                 if (e.type === 'throw') this.audio.play('throw');

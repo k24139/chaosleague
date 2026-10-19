@@ -14,15 +14,17 @@ export class EntityRenderer {
             if (!fade) continue;
             const celebrate = winner === p.side;
             if (pos.y < FLOOR + 20 && (w.sportId !== 'knockout' || Math.abs(pos.x - 560) < w.platformHalf)) g.fillStyle(ink, .5).fillEllipse(pos.x, FLOOR - 2, 66 * p.scale, 10);
-            g.save(); g.translateCanvas(pos.x, pos.y); g.rotateCanvas(p.body.angle);
+            g.save(); g.translateCanvas(pos.x, pos.y); g.rotateCanvas(p.body.angle + (p.stun > 0 ? Math.sin(w.elapsed * .025) * .06 : 0));
             const squash = Math.min(.11, p.stun / 230 * .11), stretch = Math.min(.07, Math.abs(p.body.velocity.y) * .005);
-            g.scaleCanvas(p.scale * (1 + squash - stretch), p.scale * (1 - squash + stretch));
+            const sliding = w.sportId === 'soccer' && w.elapsed < p.actionUntil;
+            g.scaleCanvas(p.scale * (sliding ? 1.2 : 1) * (1 + squash - stretch), p.scale * (sliding ? .65 : 1) * (1 - squash + stretch));
             const run = Math.sin(time * .018) * Math.min(8, Math.abs(p.body.velocity.x) * 1.7), jump = p.body.velocity.y < -2;
             // Heavy boots and clenched fists give the silhouette a competitive stance.
             g.lineStyle(9, PALETTE.border, fade).lineBetween(-12, 22, -18 + run, 40).lineBetween(12, 22, 18 - run, 40);
             g.fillStyle(PALETTE.text, fade).fillRoundedRect(-27 + run, 35, 20, 8, 2).fillRoundedRect(7 - run, 35, 20, 8, 2);
             const holding = w.balls.some(b => b.holder === p.side);
-            const fistY = celebrate ? -38 : holding ? -12 : jump ? -24 : p.stun ? 18 : 7;
+            const blocking = w.sportId === 'basketball' && w.elapsed < p.actionUntil;
+            const fistY = blocking ? -25 + Math.sin((w.elapsed - p.actionStarted) * .018) * 18 : celebrate ? -38 : holding ? -12 : jump ? -24 : p.stun ? 18 : 7;
             g.lineStyle(10, PALETTE.border, fade).lineBetween(-20, 0, -34, fistY).lineBetween(20, 0, 34, fistY);
             g.fillStyle(team.color, fade).fillRoundedRect(-40, fistY - 5, 13, 13, 3).fillRoundedRect(27, fistY - 5, 13, 13, 3);
             g.fillStyle(team.color, fade).fillRoundedRect(-24, -9, 48, 40, 5);
@@ -53,6 +55,13 @@ export class EntityRenderer {
             if (p.stun > 0 && time) {
                 g.fillStyle(PALETTE.acid, fade);
                 for (let i = 0; i < 3; i++) g.fillRect(Math.cos(time * .012 + i * 2.1) * 24 - 2, -67 + Math.sin(time * .012 + i * 2.1) * 5, 4, 4);
+            }
+            if (w.elapsed < p.actionUntil && w.sportId !== 'basketball') {
+                g.lineStyle(2, PALETTE.cyan, .6).strokeEllipse(-p.actionDirection * 18, 32, 60, 12);
+            }
+            if (blocking) {
+                g.lineStyle(3, PALETTE.cyan, .8).beginPath();
+                g.arc(p.actionDirection * 35, -16, 24, -1.7, 1.7); g.strokePath();
             }
             g.restore();
         }

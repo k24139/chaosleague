@@ -113,6 +113,11 @@ export class AudioManager {
             case 'cup-victory': [130.81, 164.81, 196, 261.63, 329.63].forEach((n, i) => this.tone(n, .7, 'sawtooth', .025, 0, false, i * .1)); this.tone(55, .85, 'sine', .16, -25); break;
             case 'catch': this.tone(280, .07, 'triangle', .06, -130); break;
             case 'throw': this.noise(.06, .018, 4500); this.tone(150, .07, 'triangle', .03, 120); break;
+            case 'block': this.noise(.08, .045, 2200); this.tone(310, .09, 'square', .025, -200); break;
+            case 'dizzy': this.tone(500, .25, 'triangle', .04, -320); break;
+            case 'slide':
+            case 'dash': this.noise(.12, .025, 3200); break;
+            case 'airjump': this.tone(350, .1, 'triangle', .05, 300); break;
             case 'jump': this.tone(160, .08, 'triangle', .055, 160); break;
             case 'hit': { const impact = .25 + .75 * Math.max(0, Math.min(1, strength)); this.tone(85 + impact * 30 + Math.random() * 10, .08, 'sine', .12 * impact, -65); this.noise(.045, .025 * impact, 900); } break;
             case 'count-3': this.tone(440, .09, 'square', .024, -60); break;

@@ -77,7 +77,7 @@ export async function playMatch(page, mode='quick', budget=210000, url='http://l
         const {AIController}=await import('/src/systems/AIController.ts');
         window.__drivers=[new AIController(3,0),new AIController(3,1)];
     });
-    const held=new Set(), keys=[['a','d','w'],['ArrowLeft','ArrowRight','ArrowUp']];
+    const held=new Set(), keys=[['a','d','w','s'],['ArrowLeft','ArrowRight','ArrowUp','ArrowDown']];
     const events=[], started=Date.now(); let prior='';
     while(Date.now()-started<budget) {
         const state=await page.evaluate(()=>{
@@ -93,7 +93,7 @@ export async function playMatch(page, mode='quick', budget=210000, url='http://l
         if(key!==prior){const event={...state,inputs:undefined,at:Date.now()-started};events.push(event);onProgress(event);prior=key;}
         if(state.phase==='finished'||mode==='cup'&&state.phase==='bracket'&&state.wins.some(w=>w>=3))break;
         for(let side=0;side<(mode==='two'?2:1);side++) {
-            for(const [i,action] of ['left','right','action'].entries()) {
+            for(const [i,action] of ['left','right','jump','action'].entries()) {
                 const k=keys[side][i], down=state.inputs[side]?.[action]??false;
                 if(down&&!held.has(k)){await page.keyboard.down(k);held.add(k);}
                 if(!down&&held.has(k)){await page.keyboard.up(k);held.delete(k);}

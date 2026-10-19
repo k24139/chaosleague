@@ -7,6 +7,7 @@ export type Input = {
     left: boolean;
     right: boolean;
     action: boolean;
+    jump?: boolean;
 };
 export const EMPTY_INPUT: Input = { left: false, right: false, action: false };
 export const SPORTS: SportId[] = ['basketball', 'soccer', 'volleyball', 'knockout'];
@@ -15,10 +16,10 @@ export const SPORT_META: Record<SportId, {
     verb: string;
     icon: string;
 }> = {
-    basketball: { name: 'Basketball', verb: 'Hold action to catch and charge. Release to shoot at the far hoop.', icon: '◉' },
-    soccer: { name: 'Soccer', verb: 'Kick the ball into the far goal.', icon: '⬡' },
-    volleyball: { name: 'Volleyball', verb: 'Land the ball on the other side of the net.', icon: '◒' },
-    knockout: { name: 'Knockout', verb: 'Jump and bump your rival off the platform.', icon: '✦' }
+    basketball: { name: 'Basketball', verb: 'Touch to collect. Hold S to shoot; S without a ball blocks.', icon: '◉' },
+    soccer: { name: 'Soccer', verb: 'S: Slide Tackle. Kick into the far goal.', icon: '⬡' },
+    volleyball: { name: 'Volleyball', verb: 'S: Double Jump. Land the ball across the net.', icon: '◒' },
+    knockout: { name: 'Knockout', verb: 'S: Dash. Push your rival off the platform.', icon: '✦' }
 };
 export const TEAMS = [
     { name: 'Frogs', color: 0xc8ff38, hex: '#c8ff38', face: 'frog' },

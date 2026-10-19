@@ -7,10 +7,11 @@ import { SHOT_CHARGE_MS, RECATCH_MS, shotVelocity } from '../src/systems/Basketb
 import { EMPTY_INPUT, type Side } from '../src/config/game';
 const held = { ...EMPTY_INPUT, action: true };
 function nearby(w: PhysicsWorld, side: Side = 0, ball = 0) {
-    const p = w.players[side]; Matter.Body.setPosition(w.balls[ball].body, { x: p.body.position.x + 38 * (side === 0 ? 1 : -1), y: p.body.position.y - 10 });
+    const p = w.players[side]; Matter.Body.setPosition(w.balls[ball].body, { x: p.body.position.x + (24 * p.scale + w.balls[ball].radius - 2) * (side === 0 ? 1 : -1), y: p.body.position.y - 10 });
 }
 for (const mods of [[], ['giant-ball'], ['tiny-ball'], ['double-ball'], ['giant-players'], ['tiny-players'], ['low-gravity'], ['high-gravity'], ['super-bounce'], ['speed-boost'], ['moving-goals'], ['strong-wind'], ['ice-floor']]) test(`catch, carry, charge and release: ${mods.join() || 'normal'}`, () => {
     const w = new PhysicsWorld('basketball', mods), b = w.balls[0]; nearby(w);
+    w.step([EMPTY_INPUT, EMPTY_INPUT]); assert.equal(b.holder, 0);
     const moving = { ...held, right: true };
     w.step([moving, EMPTY_INPUT]); assert.equal(b.holder, 0); assert.equal(b.possession.kind, 'charging'); assert.equal(b.body.isSensor, true);
     const x = w.players[0].body.position.x;
@@ -21,22 +22,22 @@ for (const mods of [[], ['giant-ball'], ['tiny-ball'], ['double-ball'], ['giant-
     assert.equal(b.body.collisionFilter.mask, 1); assert.ok(b.body.velocity.x > 0); assert.ok(b.body.velocity.y < 0);
     nearby(w); assert.equal(w.grabBall(w.players[0], b), false); w.destroy();
 });
-test('hard body contact dislodges possession; incidental contact preserves it', () => {
+test('all ordinary body contact preserves possession', () => {
     for (const speed of [.5, 8]) {
         const w = new PhysicsWorld('basketball', []), b = w.balls[0]; nearby(w); w.step([held, EMPTY_INPUT]);
         Matter.Body.setVelocity(w.players[0].body, { x: 0, y: 0 });
         Matter.Body.setPosition(w.players[1].body, { x: w.players[0].body.position.x + 46, y: w.players[0].body.position.y });
         Matter.Body.setVelocity(w.players[1].body, { x: -speed, y: 0 });
         w.step([held, EMPTY_INPUT]);
-        assert.equal(b.holder, speed > 4.5 ? null : 0);
-        if (speed > 4.5) assert.equal(b.possession.kind, 'released');
+        assert.equal(b.holder, 0);
         w.destroy();
     }
 });
 test('opponent action contests a held ball before body contact', () => {
     const w = new PhysicsWorld('basketball', []), b = w.balls[0]; nearby(w); w.step([held, EMPTY_INPUT]);
     Matter.Body.setPosition(w.players[1].body, { x: b.body.position.x + 55, y: b.body.position.y });
-    w.step([held, held]); assert.equal(b.holder, null); w.destroy();
+    w.players[1].facing = -1; w.step([held, held]); assert.equal(b.holder, 0);
+    for (let i=0; i<6; i++) w.step([held, held]); assert.equal(b.holder, null); w.destroy();
 });
 test('each player can hold only one ball and Double Ball ownership is independent', () => {
     const w = new PhysicsWorld('basketball', ['double-ball']); nearby(w, 0, 0); nearby(w, 0, 1);
@@ -54,7 +55,7 @@ test('held balls cannot score through a hoop', () => {
     Matter.Body.setVelocity(b.body, { x: 0, y: 5 }); assert.equal(w.sport.check(w), null); w.destroy();
 });
 test('charging caps at full power without an automatic timed release', () => {
-    const w = new PhysicsWorld('basketball', []); nearby(w); w.step([held, EMPTY_INPUT]);
+    const w = new PhysicsWorld('basketball', []); nearby(w); w.step([EMPTY_INPUT, EMPTY_INPUT]); w.step([held, EMPTY_INPUT]);
     const b = w.balls[0]; w.elapsed += SHOT_CHARGE_MS * 4;
     assert.equal(b.charge(w.elapsed), 1); w.step([held, EMPTY_INPUT]); assert.equal(b.holder, 0);
     w.step([EMPTY_INPUT, EMPTY_INPUT]); assert.equal(b.holder, null); assert.equal(b.charge(w.elapsed), 0); w.destroy();
@@ -100,14 +101,14 @@ test('grab range is local and a fast ball requires close contact', () => {
     const w=new PhysicsWorld('basketball',[]), p=w.players[0], b=w.balls[0];
     assert.equal(w.grabBall(p,b),false);
     w.setPosition(b.body,p.body.position.x+p.radius+b.radius+12,p.body.position.y); Matter.Body.setVelocity(b.body,{x:18,y:0});
-    assert.equal(w.grabBall(p,b),false); w.setPosition(b.body,p.body.position.x+p.radius+b.radius,p.body.position.y);
+    assert.equal(w.grabBall(p,b),false); w.setPosition(b.body,p.body.position.x+24*p.scale+b.radius,p.body.position.y);
     assert.equal(w.grabBall(p,b),true); w.destroy();
 });
 test('carrying hand stays stable through direction changes and the player can jump', () => {
     const w=new PhysicsWorld('basketball',[]); for(let i=0;i<20;i++)w.step([EMPTY_INPUT,EMPTY_INPUT]);
     nearby(w); const b=w.balls[0]; w.grabBall(w.players[0],b); const anchor=w.heldPosition(b);
     w.players[0].facing=-1; assert.deepEqual(w.heldPosition(b),anchor);
-    w.step([held,EMPTY_INPUT]); assert.ok(w.players[0].body.velocity.y < -8); assert.equal(b.holder,0); w.destroy();
+    w.step([{...EMPTY_INPUT,jump:true},EMPTY_INPUT]); assert.ok(w.players[0].body.velocity.y < -8); assert.equal(b.holder,0); w.destroy();
 });
 test('resets and world disposal clear all possession and charge state', () => {
     const w=new PhysicsWorld('basketball',['double-ball']); nearby(w); w.step([held,EMPTY_INPUT]);
@@ -119,7 +120,7 @@ test('other sports cannot carry balls', () => {
     for(const sport of ['soccer','volleyball'] as const){const w=new PhysicsWorld(sport,[]); nearby(w); assert.equal(w.grabBall(w.players[0],w.balls[0]),false);w.destroy();}
 });
 test('simultaneous loose-ball contest resolves deterministically with one owner', () => {
-    const run=()=>{const w=new PhysicsWorld('basketball',[]); w.setPosition(w.players[0].body,510,430);w.setPosition(w.players[1].body,610,430);w.setPosition(w.balls[0].body,560,430);w.step([held,held]);const state=w.balls[0].possession;w.destroy();return state.kind;};
+    const run=()=>{const w=new PhysicsWorld('basketball',[]); w.setPosition(w.players[0].body,540,430);w.setPosition(w.players[1].body,580,430);w.setPosition(w.balls[0].body,560,430);w.step([held,held]);const holder=w.balls[0].holder;assert.equal(holder,0);w.destroy();return holder;};
     assert.equal(run(),run());
 });
 test('CPU acquires, charges and releases using the same opponent-targeted shot path', () => {

@@ -1,3 +1,7 @@
+# Action system verification — October 18, 2026
+
+Current results and evidence: [Basketball possession and sport Actions](audit/ACTION-SYSTEM.md). The earlier audits below are historical.
+
 # UI and basketball overhaul — October 14, 2026
 
 This pass builds on the existing uncommitted `gameplay-polish` checkout. The prior presentation audit below is retained as historical evidence. No runtime dependencies were added.

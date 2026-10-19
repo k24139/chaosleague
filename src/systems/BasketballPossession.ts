@@ -2,12 +2,15 @@ import type { Side } from '../config/game';
 
 export const SHOT_CHARGE_MS = 1050;
 export const RECATCH_MS = 250;
-export const STEAL_SPEED = 4.5;
+export const BLOCK_STARTUP_MS = 80;
+export const BLOCK_ACTIVE_MS = 250;
+export const BLOCK_RECOVERY_MS = 250;
+export const DIZZY_MS = 1000;
 export type Possession =
     | { kind: 'free' }
     | { kind: 'held'; owner: Side; caughtAt: number }
     | { kind: 'charging'; owner: Side; caughtAt: number; startedAt: number }
-    | { kind: 'released'; owner: Side; until: number; strikeUntil: number };
+    | { kind: 'released'; owner: Side; until: number; strikeUntil: number; pickupUntil?: number };
 
 export function chargeAmount(state: Possession, now: number) {
     return state.kind === 'charging' ? Math.min(1, Math.max(0, (now - state.startedAt) / SHOT_CHARGE_MS)) : 0;

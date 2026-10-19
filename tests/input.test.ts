@@ -23,7 +23,7 @@ function key(type: string, code: string, extra: object = {}) {
 function input(two = false) { const m = new InputManager(); m.twoPlayer = two; m.enabled = true; return m; }
 const down = (code: string) => key('keydown', code);
 const up = (code: string) => key('keyup', code);
-for (const [code, control] of [['KeyA', 'left'], ['KeyD', 'right'], ['KeyW', 'action'], ['ArrowLeft', 'left'], ['ArrowRight', 'right'], ['ArrowUp', 'action']] as const) {
+for (const [code, control] of [['KeyA', 'left'], ['KeyD', 'right'], ['KeyS', 'action'], ['ArrowLeft', 'left'], ['ArrowRight', 'right'], ['ArrowDown', 'action']] as const) {
     test(`solo ${code} controls the human`, () => {
         const m = input();
         assert.equal(down(code).defaultPrevented, true);
@@ -34,12 +34,12 @@ for (const [code, control] of [['KeyA', 'left'], ['KeyD', 'right'], ['KeyW', 'ac
 }
 test('solo can alternate schemes repeatedly and combine equivalent held keys', () => {
     const m = input();
-    for (let i = 0; i < 10; i++) for (const scheme of [['KeyA', 'KeyD', 'KeyW'], ['ArrowLeft', 'ArrowRight', 'ArrowUp']]) {
+    for (let i = 0; i < 10; i++) for (const scheme of [['KeyA', 'KeyD', 'KeyS'], ['ArrowLeft', 'ArrowRight', 'ArrowDown']]) {
         down(scheme[0]); assert.equal(m.get(0).left, true); up(scheme[0]);
         down(scheme[1]); assert.equal(m.get(0).right, true); up(scheme[1]);
         down(scheme[2]); assert.equal(m.get(0).action, true); up(scheme[2]);
     }
-    for (const [a, b, control] of [['KeyA', 'ArrowLeft', 'left'], ['KeyD', 'ArrowRight', 'right'], ['KeyW', 'ArrowUp', 'action']] as const) {
+    for (const [a, b, control] of [['KeyA', 'ArrowLeft', 'left'], ['KeyD', 'ArrowRight', 'right'], ['KeyS', 'ArrowDown', 'action']] as const) {
         down(a); down(b); up(a); assert.equal(m.get(0)[control], true); up(b); assert.equal(m.get(0)[control], false);
     }
     m.destroy();
@@ -51,7 +51,7 @@ test('opposite directions are neutral and releasing one restores the other', () 
     down('ArrowLeft'); assert.deepEqual(m.get(0), EMPTY_INPUT);
     up('ArrowRight'); assert.equal(m.get(0).left, true); m.destroy();
 });
-for (const held of ['KeyA', 'KeyD', 'KeyW']) for (const arrow of ['ArrowLeft', 'ArrowRight', 'ArrowUp']) {
+for (const held of ['KeyA', 'KeyD', 'KeyS']) for (const arrow of ['ArrowLeft', 'ArrowRight', 'ArrowDown']) {
     test(`two-player ${held} remains held across ${arrow} down and up`, () => {
         const m = input(true); down(held); const initial = m.get(0);
         down(arrow); assert.deepEqual(m.get(0), initial); const other = m.get(1);
@@ -59,9 +59,9 @@ for (const held of ['KeyA', 'KeyD', 'KeyW']) for (const arrow of ['ArrowLeft', '
         down(held); up(arrow); assert.deepEqual(m.get(0), initial); m.destroy();
     });
 }
-test('both players move and jump together and change directions independently', () => {
+test('both players move and act together and change directions independently', () => {
     const m = input(true);
-    down('KeyW'); down('KeyD'); down('ArrowLeft'); down('ArrowUp');
+    down('KeyS'); down('KeyD'); down('ArrowLeft'); down('ArrowDown');
     assert.deepEqual(m.get(0), { left: false, right: true, action: true });
     assert.deepEqual(m.get(1), { left: true, right: false, action: true });
     up('KeyD'); down('KeyA'); up('ArrowLeft'); down('ArrowRight');
@@ -71,7 +71,7 @@ test('both players move and jump together and change directions independently', 
 test('blur, hidden page and full exit clear all held state', () => {
     const m = input(true);
     for (const clear of [() => win.dispatchEvent(new Event('blur')), () => { doc.hidden = true; doc.dispatchEvent(new Event('visibilitychange')); doc.hidden = false; }, () => m.clear()]) {
-        m.enabled = true; down('KeyD'); down('ArrowLeft'); down('KeyW'); down('ArrowUp');
+        m.enabled = true; down('KeyD'); down('ArrowLeft'); down('KeyS'); down('ArrowDown');
         clear(); assert.deepEqual(m.get(0), EMPTY_INPUT); assert.deepEqual(m.get(1), EMPTY_INPUT);
         m.enabled = true; down('KeyA'); down('ArrowRight');
         assert.equal(m.get(0).left, true); assert.equal(m.get(1).right, true); m.clear();
@@ -81,17 +81,17 @@ test('blur, hidden page and full exit clear all held state', () => {
 test('physical codes ignore key labels, auto-repeat is stable, button clicks do not replace held state', () => {
     const m = input(true);
     key('keydown', 'KeyD', { key: 'a' });
-    for (let i = 0; i < 5; i++) key('keydown', 'ArrowUp', { repeat: true });
+    for (let i = 0; i < 5; i++) key('keydown', 'ArrowDown', { repeat: true });
     assert.equal(m.get(0).right, true); assert.equal(m.get(0).left, false); assert.equal(m.get(1).action, true);
-    up('ArrowUp'); assert.equal(m.get(0).right, true);
+    up('ArrowDown'); assert.equal(m.get(0).right, true);
     // Input listens at window, not a focused canvas or button.
-    nodes[0].dispatchEvent(new Event('click')); down('KeyW'); assert.equal(m.get(0).action, true); m.destroy();
+    nodes[0].dispatchEvent(new Event('click')); down('KeyS'); assert.equal(m.get(0).action, true); m.destroy();
 });
 test('keyboard and multiple touch pointers coexist and cancellation releases only that pointer', () => {
     const m = input(true);
     const pointer = (node: Button, type: string, id: number) => node.dispatchEvent(Object.assign(new Event(type, { cancelable: true }), { pointerId: id }));
     pointer(nodes[0], 'pointerdown', 1); pointer(nodes[2], 'pointerdown', 2); pointer(nodes[4], 'pointerdown', 3);
-    down('ArrowUp'); assert.deepEqual(m.get(0), { left: true, right: false, action: true });
+    down('ArrowDown'); assert.deepEqual(m.get(0), { left: true, right: false, action: true });
     assert.deepEqual(m.get(1), { left: false, right: true, action: true });
     pointer(nodes[0], 'pointercancel', 1); assert.equal(m.get(0).left, false); assert.equal(m.get(0).action, true);
     pointer(nodes[4], 'lostpointercapture', 3); assert.equal(m.get(1).right, false); assert.equal(m.get(1).action, true);
@@ -128,7 +128,7 @@ test('real physics consumes both input schemes through scoring/reset boundaries 
 
 test('phase gates preserve physical presses and always consume releases', () => {
     const m = input(); m.inMatch = true;
-    for (const code of ['KeyA', 'KeyD', 'KeyW', 'ArrowLeft', 'ArrowRight', 'ArrowUp']) {
+    for (const code of ['KeyA', 'KeyD', 'KeyS', 'ArrowLeft', 'ArrowRight', 'ArrowDown']) {
         m.enabled = false; down(code);
         assert.ok(m.keys.has(code)); assert.deepEqual(m.get(0), EMPTY_INPUT);
         up(code); m.enabled = true; assert.deepEqual(m.get(0), EMPTY_INPUT);
@@ -141,7 +141,7 @@ test('phase gates preserve physical presses and always consume releases', () => 
 });
 test('a complete tap between physics frames is consumed once and cannot stick', () => {
     const m = input();
-    for (const code of ['KeyA', 'KeyD', 'KeyW', 'ArrowLeft', 'ArrowRight', 'ArrowUp']) {
+    for (const code of ['KeyA', 'KeyD', 'KeyS', 'ArrowLeft', 'ArrowRight', 'ArrowDown']) {
         down(code); up(code); assert.ok(Object.values(m.get(0)).some(Boolean));
         assert.deepEqual(m.get(0), EMPTY_INPUT);
         down(code); up(code); assert.ok(Object.values(m.get(0)).some(Boolean)); assert.deepEqual(m.get(0), EMPTY_INPUT);
@@ -153,10 +153,10 @@ test('a complete tap between physics frames is consumed once and cannot stick', 
 test('rapid solo tap-release-tap sequences and mixed schemes survive twenty round gates', () => {
     const m = input(); m.inMatch = true;
     for (let round = 0; round < 20; round++) {
-        for (const [code, control] of [['KeyA','left'], ['KeyD','right'], ['KeyA','left'], ['KeyW','action'], ['ArrowRight','right'], ['ArrowUp','action'], ['KeyD','right']] as const) {
+        for (const [code, control] of [['KeyA','left'], ['KeyD','right'], ['KeyA','left'], ['KeyS','action'], ['ArrowRight','right'], ['ArrowDown','action'], ['KeyD','right']] as const) {
             down(code); assert.equal(m.get(0)[control], true); up(code); assert.deepEqual(m.get(0), EMPTY_INPUT);
         }
-        m.enabled = false; down('KeyW'); up('KeyW'); down('KeyD'); m.enabled = true;
+        m.enabled = false; down('KeyS'); up('KeyS'); down('KeyD'); m.enabled = true;
         assert.equal(m.get(0).right, true); up('KeyD'); assert.deepEqual(m.get(0), EMPTY_INPUT);
     }
     m.destroy();
@@ -169,9 +169,9 @@ test('local players can hold and release across pause, scoring and countdown gat
         up('KeyD'); down('KeyA'); m.enabled = true;
         assert.equal(m.get(0).left, true); assert.equal(m.get(1).left, true);
         up('ArrowLeft'); assert.equal(m.get(0).left, true); assert.deepEqual(m.get(1), EMPTY_INPUT);
-        up('KeyA'); down('KeyW'); down('ArrowUp');
+        up('KeyA'); down('KeyS'); down('ArrowDown');
         assert.equal(m.get(0).action, true); assert.equal(m.get(1).action, true);
-        up('KeyW'); assert.equal(m.get(0).action, false); assert.equal(m.get(1).action, true); up('ArrowUp');
+        up('KeyS'); assert.equal(m.get(0).action, false); assert.equal(m.get(1).action, true); up('ArrowDown');
     }
     m.destroy();
 });
@@ -184,4 +184,13 @@ test('a brief touch action survives normal release but not cancellation or stole
     pointer('pointerdown', 101); pointer('pointercancel', 101); assert.equal(m.get(0).action, false);
     pointer('pointerdown', 102); pointer('lostpointercapture', 102); assert.equal(m.get(0).action, false);
     m.destroy();
+});
+
+for (const code of ['KeyW','ArrowUp']) test(code+' exclusively controls Jump',()=>{
+    const m=input(); down(code);assert.equal(m.get(0).jump,true);assert.equal(m.get(0).action,false);up(code);assert.deepEqual(m.get(0),EMPTY_INPUT);m.destroy();
+});
+test('held Action is suppressed across a transition until physically released',()=>{
+    const m=input(true);down('KeyS');down('ArrowDown');m.get(0);m.get(1);
+    m.enabled=false;m.enabled=true;assert.equal(m.get(0).action,false);assert.equal(m.get(1).action,false);
+    up('KeyS');down('KeyS');assert.equal(m.get(0).action,true);assert.equal(m.get(1).action,false);m.destroy();
 });
